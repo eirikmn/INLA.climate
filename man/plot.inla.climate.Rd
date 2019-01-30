@@ -9,19 +9,38 @@
 }
 \usage{
 ## S3 method for class 'inla.climate'
-\method{plot}{inla.climate}(x, plot.latent=TRUE, plot.hyperpars=TRUE, plot.samples.tcr=TRUE,...)
+\method{plot}{inla.climate}(x,  plot.random=TRUE,
+                                plot.hyperpars=TRUE,
+                                plot.tcr.samples=TRUE,
+                                plot.mu = TRUE,
+                                postscript = FALSE,
+                                pdf = FALSE,
+                                prefix = "inla.climate.plots/figure-",
+                                ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
      \code{inla.climate} object returned by \code{inla.climate} function. Also works if the TCR sampling procedure has been skipped.
 }
-\item{plot.latent}{
-Boolean indicating if marginal posterior means and 95\% intervals for the latent GMRF corresponding to the AR(1) mixture.
+\item{plot.random}{
+Boolean variable indicating if marginal posterior means and 95\% credible intervals for the latent GMRF corresponding to the AR(1) mixture.
 }
 \item{plot.hyperpars}{Boolean indicating if the marginal posterior distributions of the hyperparameters should be plotted.}
-\item{plot.samples.tcr}{
+\item{plot.tcr.samples}{
 Boolean variable indicating if a histogram for the TCR samples should be plotted (should there be any).
+}
+\item{plot.mu}{
+Boolean variable indicating if the forcing response that can be interpreted as the mean of the fGn should be plotted. The observations are also included in the plot.
+}
+\item{postscript}{
+Boolean variable indicating if postscript files should be produced instead.
+}
+\item{pdf}{
+Boolean variable indicating if pdf files should be produced instead.
+}
+\item{prefix}{
+The prefix for created files. Additional numbering is added.
 }
 \item{...}{
 Additional arguments to \code{postscripts()}, \code{pdf()} or \code{dev.new()}.

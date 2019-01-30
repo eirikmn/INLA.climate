@@ -22,7 +22,7 @@ inla.climate.mu(result, forcing, nsamples = 100000, full.Bayesian = FALSE, seed 
      The number of Monte Carlo simulations used in obtaining transient climate response inference.
 }
   \item{full.Bayesian}{
-    Boolean variable. If \code{TRUE} all Monte Carlo simulations will be stored. If \code{FALSE} the 2.5\% and 97.5\% credible intervals will not be computed.
+    Boolean variable. If \code{TRUE} all Monte Carlo simulations will be stored. If \code{FALSE} the 2.5\% and 97.5\% quantiles will not be computed.
 }
   \item{seed}{
      Seed used for random number generator.
@@ -52,7 +52,7 @@ inla.climate.mu(result, forcing, nsamples = 100000, full.Bayesian = FALSE, seed 
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+  Eirik Myrvoll-Nilsen \href{eirik.myrvoll-nilsen@uit.no}{eirik.myrvoll-nilsen@uit.no}
 }
 \note{
 %%  ~~further notes~~

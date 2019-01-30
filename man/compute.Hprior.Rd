@@ -47,8 +47,7 @@ Sørbye, S., Rue, H. (2017)
   Environmetrics, 29(5-6)
 }
 \author{
-%%  ~~who you are~~
-Eirik Myrvoll-Nilsen
+  Eirik Myrvoll-Nilsen \href{eirik.myrvoll-nilsen@uit.no}{eirik.myrvoll-nilsen@uit.no}
 }
 \note{
 %%  ~~further notes~~

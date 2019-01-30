@@ -22,32 +22,23 @@ The number of lags of which the approximate autocorrelation functions are suppos
 The long memory process for which \code{H} is a parameter of. Currently, only fractional Gaussian noise (\code{model="fgn"}) and ARFIMA(0,d,0) (\code{model="arfima"},d=H-0.5) are supported.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
-Returns a vector of functions. The \code{m} first maps the Hurst exponent to the lag-one correlation parameters, and the last \code{m} will map to the weights.
+Returns a list of functions. The \code{m} first maps the Hurst exponent to the lag-one correlation parameters, and the last \code{m} will map to the weights.
 }
 \references{
 %% ~put references to the literature/web site here ~
 Sørbye, S., Myrvoll-Nilsen, E. and Rue, H. (2018)
-  \emph{An approximate fractional Gaussian noise model with O(n) computational cost.}.
+  \emph{An approximate fractional Gaussian noise model with O(n) computational cost}.
   Statistics and Computing.
 }
 \author{
 Eirik Myrvoll-Nilsen \href{eirik.myrvoll-nilsen@uit.no}{eirik.myrvoll-nilsen@uit.no}
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 \code{\link{inla.climate}}
 }
@@ -69,5 +60,5 @@ for(i in 1:m){
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ ts }% use one of  RShowDoc("KEYWORDS")
+\keyword{ models }% __ONLY ONE__ keyword per line

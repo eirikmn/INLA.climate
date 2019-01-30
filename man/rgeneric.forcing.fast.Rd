@@ -13,14 +13,14 @@ rgeneric.forcing.fast(cmd = c("graph", "Q", "mu", "initial", "log.norm.const", "
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{cmd}{
-%%     ~~Describe \code{cmd} here~~
+Functions that specifies the latent Gaussian field and the prior distributions of the hyperparameters.
 }
   \item{theta}{
-%%     ~~Describe \code{theta} here~~
+The hyperparameters of the latent Gaussian model in logarithmic scaling.
 }
 }
 \details{
-This function is only used to 
+This function sets up the radiative forcing long memory process as an \code{R-INLA} \code{rgeneric} model. It is used internally by \code{INLA.climate} and is not intended to be used separately by the user.
 }
 \value{
 %%  ~Describe the value returned
@@ -28,13 +28,13 @@ This function is only used to
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
-When used as an input argument for \code{inla.rgeneric.define} this will return a model eligible to be used within the R-INLA framework.
+When used as an input argument for \code{inla.rgeneric.define} this will return a model eligible to be used within the R-INLA framework (see example).
 }
 \references{
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Eirik Myrvoll-Nilsen <\email{eirikmn91@gmail.com}>
 }
 \note{
 %%  ~~further notes~~
@@ -43,7 +43,7 @@ When used as an input argument for \code{inla.rgeneric.define} this will return 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link[INLA]{rgeneric}}
 }
 \examples{
 
@@ -51,19 +51,19 @@ When used as an input argument for \code{inla.rgeneric.define} this will return 
   if(require("INLA",quietly=TRUE)){
   library(longmemo)
   n <- 300
-  H <- 0.8  
+  H <- 0.8
   m <- 4
 
   forcing <- arima.sim(n=n, list(ar=c(0.6)),sd = 1)
   fgnsim <- simFGN0(n,H)
-  
+
   fgnmean <- numeric(n)
-  struktur <- (0.5+seq(0,n-1,length.out=n))^(H-3/2)    
+  struktur <- (0.5+seq(0,n-1,length.out=n))^(H-3/2)
   for(i in 1:n){
       fgnmean[i] <- rev(struktur[1:i])\%*\%forcing[1:i]
   }
   y <- fgnsim + fgnmean
-  
+
   Hprior <- compute.Hprior(n, 0.9, 0.1)
 
   funks <- h.map.maker(m=m)

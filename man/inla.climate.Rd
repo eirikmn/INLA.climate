@@ -8,9 +8,10 @@ An INLA climate forcing model for global mean surface temperature
 Fits forcing data to a given temperature dataset using INLA. The undocumented forcing variables not included in \code{forcing} are collectively assumed a stochastic fGn process. Also uses Monte Carlo simulations to obtain Bayesian inference about the transient climate response.
 }
 \usage{
-inla.climate(data, forcing, Qco2 = NULL,m = 4, stoc = "fgn", print.progress = FALSE,
-   inla.options = list(compute.dic=TRUE, nruns=1, initialtheta=NULL, stepLength = 0.01, verbose = FALSE),
-   tcr.options = list(mcmcsamples = 100000, seed = 1234))
+inla.climate(data, forcing, Qco2 = NULL,compute.mu=FALSE, stepLength = 0.01, restart.inla = FALSE, m = 4, stoc = "fgn", print.progress = FALSE,
+   inla.options = list(),
+   tcr.options = list(),
+   mu.options = list())
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,6 +24,15 @@ inla.climate(data, forcing, Qco2 = NULL,m = 4, stoc = "fgn", print.progress = FA
   \item{Qco2}{
      Qco2 The slope of the forcing when assuming a CO2 doubling in the future. Used for computing the transient climate response. Qco2 = NULL will skip the transient climate response sampling procedure.
 }
+  \item{compute.mu}{
+    Boolean variable indicating whether or not the \code{forcing} temperature response should be computed explicitly. Doing so will increase runtime.
+}
+  \item{stepLength}{
+    Numerical value which sets the steplength for the numerical scheme within INLA. A poor convergence can sometimes be improved by adjusting this.
+  }
+  \item{restart.inla}{
+    Boolean variable indicating whether INLA should restart at the solution found from the first convergence of the Newton-Rhapson algorithm. This can sometimes improve convergence.
+  }
   \item{m}{
      m The number of AR(1) processes used in the fGn approximation. I recommend having at least four (up to six, depending on \code{stoc} and \code{lagmax}). The model will perform slower, but more accurately if this is increased.
 }
@@ -34,26 +44,28 @@ inla.climate(data, forcing, Qco2 = NULL,m = 4, stoc = "fgn", print.progress = FA
   }
 
   \item{inla.options}{
-    A list of options for the INLA fitting procedure.
-    \code{compute.dic}
-    If \code{TRUE} the deviance information criterion (DIC) is computed.
-    \code{nruns}
-    The number of times the INLA fitting procedure should be executed. Values obtained from convergence is used as initial values in the subsequent procedure. Increasing this is likely to improve converge.
-    \code{initialtheta}
-    The initial values used for the hyperparameters (in internal scaling) in the Newton-Raphson numerical scheme. Accuracy can sometimes be improved by repeating the algorithm with starting values set to the values obtained from the previous execution. For returned object \code{result}, these can be accessed by     \code{result$inla.result$mode$theta}.
-    \code{inla.options$stepLength} sets the steplength for the numerical scheme. A poor convergence can sometimes be improved by adjusting this.
-    \code{inla.options$verbose} prints the details of the INLA numerical procedure if left \code{TRUE}.
-    \code{inla.options$Hprior} the prior used for the Hurst exponent. If left \code{NULL} a penalise complexity prior will be generated (somewhat time consuming).
-    \code{inla.options$Hpriorparam} denotes the parameters to be used if the PC prior for the Hurst exponent should be generated.
+    A list of options for the \code{R-INLA} fitting procedure. See \link[INLA]{control.inla}, \link[INLA]{control.compute}, \link[INLA]{control.family} and \link[INLA]{control.predictor} for detailed description of options. There are, however, some default values that has been overridden in \code{INLA.climate}:
+    \code{num.threads = 1},
+    \code{control.compute\$dic = TRUE} if there are no \code{NA} values in \code{data},
+    \code{control.compute\$config = TRUE},
+    \code{control.inla\$reordering = "metis"},
+    \code{control.family\$hyper\$prec\$initial = 12},
+    \code{control.family\$hyper\$prec\$fixed = TRUE}
   }
   \item{tcr.options}{
-  A list of options for the transient climate response sampling procedure.
-  \code{tcr.options$mcmcsamples} denotes the number of generated Monte Carlo simulations for the TCR.
-  \code{seed} is used as initial input for the random number generator.
+  A list of options for the transient climate response sampling procedure. The following options can be set:
+  \code{mcsamples} denotes the number of Monte Carlo simulations used to estimate the TCR. Default value is 100000.
+  \code{seed} is used as initial input for the random number generator. Default value is 1234.
+  }
+  \item{mu.options}{
+  A list of options for the forcing response sampling procedure. The following options can be set:
+  \code{full.Bayesian} is a boolean variable that indicates if full Bayesian inference is to be computed. If \code{TRUE}, all samples for each point in time is stored. This will increase runtime and memory consumption considerably. If \code{FALSE}, only the posterior mean and standard deviation for each point is computed. Default value is \code{FALSE}.
+  \code{mcsamples} denotes the number of Monte Carlo simulations used to estimate the forcing response. Default value is 100000.
+  \code{seed} is used as initial input for the random number generator. Default value is 1234.
   }
 }
 \details{
-If \code{length(data)>length(forcing)} or \code{data} contains \code{NA} values the missing values will be predicted using INLA. For return value \code{results}, a summary can be displayed using \code{summary.inla.climate(results)}.
+If \code{length(data)>length(forcing)} or \code{data} contains \code{NA} values the missing values will be predicted using \link[INLA]{inla}. For return value \code{results}, a summary can be displayed using \code{summary.inla.climate(results)}.
 }
 \value{
 %%  ~Describe the value returned
@@ -61,14 +73,14 @@ If \code{length(data)>length(forcing)} or \code{data} contains \code{NA} values 
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
-\item{\code{inla.result}}{An object of class "inla" returned by the \code{inla}-function. See \code{help(inla)} for more details.}
+\item{\code{inla.result}}{An object of class "inla" returned by the \code{inla}-function. See \link[INLA]{inla} for more details.}
  \item{\code{hyperparam}}{A list containing the marginal posterior distribution, its mean, standard deviation and the 0.025, 0.5 and 0.975 quantiles of each hyperparameters.}
   \item{\code{latent}}{Contains the marginal posterior mean, standard deviation and the 0.025, 0.5 and 0.975 quantiles of the latent Gaussian variables fitted to the data. Also includes predictions if there are any.}
   \item{\code{time}}{Time spent for convergence. \code{time$fGn} gives the time spent fitting the temperature to an fGn, \code{time$TCR} gives the time spent doing the Monte Carlo sampling for the transient climate response and \code{time$total} gives total time elapsed time for the \code{inla.climate} function.}
   \item{\code{TCR}}{A list containing the mean, standard deviation and 0.025, 0.5 and 0.975 quantiles obtained from the transient climate response simulation procedure. \code{TCR$samples} gives a list of the Monte Carlo samples for the TCR and the hyperparameters.}
 
 \item{\code{misc}}{
-A list containing the call of the \code{inla.climate} function, as well as the input variables \code{C}, \code{m}, \code{stoc}, \code{mcmcsamples}, \code{seed}. Also includes the value for the constant term $T_0$, defined by the mean of the 20 first values of \code{y}.
+A list containing the call of the \code{inla.climate} function, as well as the input variables \code{data}, \code{forcing}, \code{C}, \code{m}, \code{stoc}, and the options set for the INLA procedure and, if they are computed, the TCR and forcing response sampling schemes. It also includes the value for the constant term $T_0$, defined by the mean of the 20 first values of \code{y}.
 }
 \item{\code{log.mlikelihood}}{
 The log marginal-likelihood of the fit obtained by INLA.
@@ -89,7 +101,7 @@ Eirik Myrvoll-Nilsen \href{eirik.myrvoll-nilsen@uit.no}{eirik.myrvoll-nilsen@uit
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{inla.climate.tcr}},\code{\link{inla.climate.mu}}
+\code{\link[INLA]{inla}},\code{\link{inla.climate.mu}}
 }
 \examples{
 if(require("INLA",quietly=TRUE)){

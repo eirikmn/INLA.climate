@@ -7,15 +7,14 @@ rgeneric.forcing.fast = function(
   cmd = c("graph", "Q","mu", "initial", "log.norm.const", "log.prior", "quit"),
   theta = NULL)
 {
+  
   require("INLA.climate",quietly=TRUE)
-  envir = environment(sys.call()[[1]])
-
-
+  
   tau = exp(15)
+  envir = environment(sys.call()[[1]])
+  
 
-
-
-  map = function(H) {
+  Hmap = function(H) {
 
     params = numeric(2*N)
     for(i in 1:(2*N)){
@@ -66,7 +65,7 @@ rgeneric.forcing.fast = function(
     xx = #tauu *
       c(1/(1-rho^2), 1/(1-rho^2), rep((1 + rho ^ 2)/(1-rho^2), n - 2L),
         rep(-rho/(1-rho^2), n - 1L))
-    Q = sparseMatrix(
+    Q = Matrix::sparseMatrix(
       i = i,
       j = j,
       x = xx,
@@ -91,7 +90,7 @@ rgeneric.forcing.fast = function(
     H = hyperparam$H
 
     kappa = hyperparam$kappa
-    param = map(hyperparam$H)
+    param = Hmap(hyperparam$H)
 
     sx = 1/sqrt(hyperparam$kappa)
     alphas = param[1:N]
@@ -119,7 +118,7 @@ rgeneric.forcing.fast = function(
 
 
 
-    Q = sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
+    Q = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
 
     return (Q)
   }
@@ -128,7 +127,7 @@ rgeneric.forcing.fast = function(
   {
     # tid.rgen.start = proc.time()[[3]]
     hyperparams = interpret.theta()
-    param = map(hyperparams$H)
+    param = Hmap(hyperparams$H)
     #N = length(param)/2
 
     sum = n/2*log(tau)
@@ -150,8 +149,8 @@ rgeneric.forcing.fast = function(
     b = 0.01
     aa = 1
     bb = 0.01
-    lprior = inla.pc.dprec(params$kappa, u=a, alpha=b, log=TRUE) + log(params$kappa)
-    lprior = lprior + inla.pc.dprec(params$scale, u=aa, alpha=bb, log=TRUE) + log(params$scale)
+    lprior = INLA::inla.pc.dprec(params$kappa, u=a, alpha=b, log=TRUE) + log(params$kappa)
+    lprior = lprior + INLA::inla.pc.dprec(params$scale, u=aa, alpha=bb, log=TRUE) + log(params$scale)
     lprior = lprior + lprior.fun.H(theta[2])
     #lprior = lprior + log(0.5)+log(1+1/(1+exp(-theta[2]))) - theta[2]-2*log(1+exp(-theta[2]))
     a=3
@@ -172,6 +171,7 @@ rgeneric.forcing.fast = function(
   }
   if(is.null(theta)){
     theta = initial()
+    #envir=.GlobalEnv
   }
 
   cmd = match.arg(cmd)

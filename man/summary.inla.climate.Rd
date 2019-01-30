@@ -20,7 +20,7 @@
 Number of digits to print.
 }
 \item{...}{
-Other arguments
+Other arguments.
 }
 }
 

@@ -1,76 +1,161 @@
 summary.inla.climate = function(object,digits=4L,...){
-  is.tcr=!is.null(object$TCR)
-  #format(, nsmall = 4)
-  #options(digits=6)
-  timeString = paste("Time used:\n"," Computing INLA",sep="")
-  if(is.tcr){
-    timeString=paste(timeString,"Sampling TCR",sep="\t")
-    timeString=paste(timeString,"\tOther\t","Total\n",sep="")
-    timeString=paste(timeString," \t ",round(object$time$inla,digits=digits),"\t       ",sep="")
+  
+  ut=list()
+  
+  maxlength=2048L
+  if(sum(nchar(object$misc$call)) > maxlength){
+    ut=c(ut, list(call=paste0( substr(deparse(object$misc$call),1L,maxlength),"...") ) )
   }else{
-    timeString=paste(timeString,"\tOther\t","Total\n",sep="")
-    timeString=paste(timeString," \t ",round(object$time$inla,digits=digits),"\t ",sep="")
+    ut=c(ut, list(call=object$misc$call))
+  }
+  
+  cpu = round(object$time$inla,digits=digits)
+  cpu.navn="Running INLA"
+  
+  
+  if(!is.null(object$TCR)){
+    cpu=c(cpu,round(object$time$TCR,digits=digits))
+    cpu.navn=c(cpu.navn,"Sampling TCR")
+  }
+  if(!is.null(object$mu)){
+    cpu=c(cpu,round(object$time$mu,digits=digits))
+    cpu.navn=c(cpu.navn,"Sampling mu")
   }
   
   
-  tid=object$time$inla
-  if(is.tcr){
-    timeString=paste(timeString,round(object$time$TCR,digits=digits),"\t",sep="")
-    tid=tid+object$time$TCR
+  cpu=c(cpu,round(object$time$Total,digits=digits))
+  cpu.navn=c(cpu.navn,"Total")
+  names(cpu)=cpu.navn
+  ut=c(ut, list(cpu.used=cpu))
+  
+  
+  hypers=matrix(round(as.numeric(c(object$hyperparam$means,object$hyperparam$sd,object$hyperparam$quant0.025,
+                object$hyperparam$quant0.5,object$hyperparam$quant0.975)),digits=digits),
+                nrow=length(object$inla.result$summary.hyperpar$mean),ncol=5)
+  hypers=as.data.frame(hypers)
+  colnames(hypers)=c("mean","sd","0.025quant","0.5quant","0.975quant")
+  hyper.navn=c()
+  if(length(object$inla.result$summary.hyperpar$mean)==5){
+    hyper.navn=c(hyper.navn,"Precision for the Gaussian observations")
   }
-  timeString = paste(timeString,round(object$time$Total-tid,digits=digits),"\t",
-                     round(object$time$Total,digits=digits),sep="")
+  hyper.navn=c(hyper.navn,"H","Sigmax","Sigmaf","F0")
+  rownames(hypers)=hyper.navn
   
+  ut=c(ut, list(hyperpar=hypers))
   
-  hyperString=paste("\n\nModel hyperparameters:\n","\t","mean\t","sd\t","0.025q\t",
-                    "0.5q\t","0.975q\n",sep="")
-  hyperString=paste(hyperString,"H\t",round(object$hyperparam$means$H,digits=digits),"\t",
-                    round(object$hyperparam$sd$H,digits=digits),"\t",
-                    round(object$hyperparam$quant0.025$H,digits=digits),"\t",
-                    round(object$hyperparam$quant0.5$H,digits=digits),"\t",
-                    round(object$hyperparam$quant0.975$H,digits=digits),
-                    "\n",sep="")
-  hyperString=paste(hyperString,"Sigmax\t",round(object$hyperparam$means$sigmax,digits=digits),"\t",
-                    round(object$hyperparam$sd$sigmax,digits=digits),"\t",
-                    round(object$hyperparam$quant0.025$sigmax,digits=digits),"\t",
-                    round(object$hyperparam$quant0.5$sigmax,digits=digits),"\t",
-                    round(object$hyperparam$quant0.975$sigmax,digits=digits),
-                    "\n",sep="")
-  hyperString=paste(hyperString,"Sigmaf\t",round(object$hyperparam$means$sigmaf,digits=digits),"\t",
-                    round(object$hyperparam$sd$sigmaf,digits=digits),"\t",
-                    round(object$hyperparam$quant0.025$sigmaf,digits=digits),"\t",
-                    round(object$hyperparam$quant0.5$sigmaf,digits=digits),"\t",
-                    round(object$hyperparam$quant0.975$sigmaf,digits=digits),
-                    "\n",sep="")
-  hyperString=paste(hyperString,"Shift\t",round(object$hyperparam$means$shift,digits=digits),"\t",
-                    round(object$hyperparam$sd$shift,digits=digits),"\t",
-                    round(object$hyperparam$quant0.025$shift,digits=digits),"\t",
-                    round(object$hyperparam$quant0.5$shift,digits=digits),"\t",
-                    round(object$hyperparam$quant0.975$shift,digits=digits),
-                    "\n",sep="")
-  #cat(hyperString)
-  TCRstring=""
-  if(is.tcr){
-    
-    TCRstring=paste(TCRstring,"\nTransient climate response (",format(object$misc$mcmcsamples,scientific=F,digits=digits)," samples):",
-                    "\n\tmean\tsd\t0.025q\t0.5q\t0.975q\n",sep="")
-    
-    TCRstring=paste(TCRstring,"TCR\t",round(object$TCR$mean,digits=digits),"\t",
-                      round(object$TCR$sd,digits=digits),"\t",
-                      round(object$TCR$quant0.025,digits=digits),"\t",
-                      round(object$TCR$quant0.5,digits=digits),"\t",
-                      round(object$TCR$quant0.975,digits=digits),
-                      "\n",sep="")
-    #cat(TCRstring)
+  if(!is.null(object$TCR)){
+    tcr=matrix(c(object$TCR$mean,object$TCR$sd,object$TCR$quant0.025,object$TCR$quant0.5,object$TCR$quant0.975),nrow=1)
+    tcr=as.data.frame(tcr)
+    colnames(tcr)=c("mean","sd","0.025quant","0.5quant","0.975quant")
+    rownames(tcr)="TCR"
+    ut=c(ut, list(TCR=tcr,tcr.samples=object$misc$TCR.option$mcsamples))
   }
   
-  approxstring = paste("\n",object$mis$stoc," approximated using ",object$misc$m," AR(1) processes",sep="")
+  if(!is.null(object$mu)){
+    ut=c(ut, list(mu.full.Bayesian=object$misc$mu.option$full.Bayesian,mu.samples=object$misc$mu.option$mcsamples))
+  }
   
-  likelihoodstring=paste("\nlog marginal log-likelihood:  ",round(object$inla.result$mlik[1],digits=digits),"\n",sep="")
-  dicstring1=paste("\nDeviance Information Criterion (DIC):     ",round(object$dic$dic,digits=digits),sep="")
-  dicstring2=paste("\nDeviance Information Criterion (saturated): ",round(object$dic$dic.sat,digits=digits),"\n",sep="")
-  utString=paste(timeString,hyperString,TCRstring,likelihoodstring,dicstring1,dicstring2,sep="")
-  cat("Call:\n")
-  show(object$misc$call)
-  cat("\n",utString)
+  neffp = object$inla.result$neffp
+  ut = c(ut, list(neffp = round(neffp, digits)))
+  
+  if(!is.null(object$inla.result$dic)){
+    ut=c(ut,list(dic=object$inla.result$dic))
+  }
+  if(!is.null(object$inla.result$waic)){
+    ut=c(ut,list(waic=object$inla.result$waic))
+  }
+  if(!is.null(object$inla.result$mlik)){
+    ut=c(ut,list(mlik=object$inla.result$mlik))
+  }
+  if(!is.null(object$inla.result$cpo$cpo) && length(object$inla.result$cpo$cpo)>0L){
+    ut=c(ut, list(cpo=lapply(object$inla.result$cpo,round,digits=digits)))
+  }
+  if(!is.null(object$inla.result$summary.linear.predictor)){
+    ut=c(ut, list(linear.predictor=round(object$inla.result$summary.linear.predictor),digits=digits))
+  }
+  if(!is.null(object$inla.result$summary.random) && length(object$inla.result$summary.random)>0L){
+  ut=c(ut, list(random.names=names(object$inla.result$summary.random),random.model=object$inla.result$model.random))
+  }
+  if(!is.null(object$inla.result$summary.linear.predictor)){
+    ut=c(ut, list(linear.predictor=round(object$inla.result$summary.linear.predictor),digits=digits))
+  }
+  
+  ut=c(ut, list(family=object$inla.result$family))
+  class(ut) = "summary.inla.climate"
+
+  return(ut)
 }
+
+print.summary.inla.climate = function(x,digits=4L,...){
+  cat("\nCall:\n",deparse(x$call),"\n\n",sep="")
+  cat("Time used:\n")
+  print(x$cpu.used)
+  cat("\n",sep="")
+  
+  if(!is.null(x$random.names)){
+    cat("Random effects:\n",sep="")
+    cat("Name\t ","Model\n",sep="")
+    for(i in 1:length(x$random.names)){
+      cat(paste0(x$random.names[i]," ",x$random.model[i],"\n"))
+    }
+    cat("\n")
+  }else{
+    cat("The model has no random effects\n\n")
+  }
+  
+  if(!is.null(x$hyperpar)){
+    cat("Model hyperparameters:\n")
+    print(format(x$hyperpar,digits=digits,nsmall=2),quote=FALSE)
+    cat("\n",sep="")
+  }else{
+    cat("This model has no hyperparameters\n\n")
+  }
+  
+  if(!is.null(x$TCR)){
+    cat("Transient climate response computed from ",format(x$tcr.samples,digits=digits,scientific=FALSE)," samples:\n",sep="")
+    print(format(x$TCR))
+    cat("\n")
+  }
+  if(!is.null(x$mu.full.Bayesian)){
+    if(x$mu.full.Bayesian){
+      cat("Full Bayesian analysis of forcing response computed with ",format(x$mu.samples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
+    }else{
+      cat("Quick computation of forcing response computed with ",format(x$mu.samples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
+    }
+  }
+  
+  if(!is.null(x$neffp)){
+    cat("Expected number of effective parameters (std dev): ", format(x$neffp[1], digits=digits, nsmall=2)," (",
+        format(x$neffp[2], digits=digits, nsmall=2),")\n", sep="")
+    cat("Number of equivalent replicates: ", format(x$neffp[3], digits=digits, nsmall=2),"\n\n",sep="")
+  } else {
+    cat("Expected number of effective parameters and Number of equivalent replicates not computed\n\n")
+  }
+  
+  if(!is.null(x$dic)){
+    cat(paste0("Deviance Information Criterion (DIC) ...: ",
+              format(x$dic$dic, digits=digits, nsmall=2), "\n", 
+              "Effective number of parameters .........: ",
+              format(x$dic$p.eff, digits=digits, nsmall=2), "\n\n"))
+  }
+  
+  if (!is.null(x$waic)){
+    cat(paste0("Watanabe-Akaike information criterion (WAIC) ...: ",
+              format(x$waic$waic, digits=digits, nsmall=2), "\n", 
+              "Effective number of parameters .................: ",
+              format(x$waic$p.eff, digits=digits, nsmall=2), "\n\n"))
+  } 
+    
+  if(!is.null(x$mlik)){
+    cat(paste("Marginal log-Likelihood: ", format(x$mlik[2], digits=digits, nsmall=2),"\n",sep=""))
+  }
+  if(!is.null(x$cpo)){
+    cat("CPO and PIT are computed\n\n")
+  }
+  if(!is.null(x$linear.predictor)){
+    cat("Posterior marginals for linear predictor and fitted values computed\n\n")
+  }
+  
+}
+
+

@@ -1,25 +1,17 @@
 h.map.maker = function(m=4,lagmax=1000,stoc="fgn"){
   
   if(!(stoc %in% c("fgn","arfima"))){
-    return(-1)
+    stop(paste0("'",stoc,"' is not supported."))
   }
+  
+  if(length(list.files(path=file.path(.Library,"/INLA.climate/Hmapping/",fsep="")))==0)
+    stop(paste0("Directory ",file.path(.Library,"/INLA.climate/Hmapping/",fsep="")," is empty. Please make sure that INLA.climate package is properly installed."))
   
   filename = paste(stoc,"Lag",lagmax,"m",m,".txt",sep="") 
-  if(!( filename %in% list.files(path=file.path(.Library,"/INLA.climate/Hmapping/",fsep="")))){
-    return(-2)
-  }
-  # if(stoc=="fgn"){
-  #   if( ( lagmax==1000 && !(m%in%c(3,4,5,6)) ) || ( lagmax==4296 &&!(m%in%c(3,4,5)) ) ){
-  #     return(-2)
-  #   }
-  # }else if(stoc=="arfima"){
-  #   if(  lagmax==1000 && !(m%in%c(4))){
-  #     return(-2)
-  #   }
-  # }else{
-  #   return(-1)
-  # }
   
+  if(!( filename %in% list.files(path=file.path(.Library,"/INLA.climate/Hmapping/",fsep="")))){
+    stop("Model specifications are not supported.")
+  }
   filepath = file.path(.Library,"/INLA.climate/Hmapping/",filename,fsep="")
   
   data = read.table(filepath)

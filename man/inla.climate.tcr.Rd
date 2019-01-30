@@ -46,7 +46,7 @@ inla.climate.tcr(result, Qco2, nsamples = 100000, seed = 1234, print.progress = 
 %% ~put references to the literature/web site here ~
 Fredriksen, H.B., Rypdal, M. (2017)
   \emph{Long-Range Persistence in Global Surface Temperatures Explained by Linear Multibox Energy Balance Models}.
-  Journal of Climate \textbf{30} (18), 7157–7168.
+  Journal of Climate 30 (18), 7157–7168.
 }
 \author{
   Eirik Myrvoll-Nilsen \href{eirik.myrvoll-nilsen@uit.no}{eirik.myrvoll-nilsen@uit.no}

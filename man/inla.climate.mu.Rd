@@ -31,9 +31,6 @@ inla.climate.mu(result, forcing, nsamples = 100000, full.Bayesian = FALSE, seed 
     Prints progression if \code{TRUE}.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
 %%  ~Describe the value returned
 %%  If it is a LIST, use
@@ -48,17 +45,9 @@ inla.climate.mu(result, forcing, nsamples = 100000, full.Bayesian = FALSE, seed 
 \item{\code{samples}}{List containing the Monte Carlo simulations of the TCR and all hyperparameters.}
 \item{\code{time}}{The time spent doing the Monte Carlo simulations.}
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
   Eirik Myrvoll-Nilsen \href{eirik.myrvoll-nilsen@uit.no}{eirik.myrvoll-nilsen@uit.no}
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
@@ -87,5 +76,5 @@ if(require("INLA",quietly=TRUE)){
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ ts }% use one of  RShowDoc("KEYWORDS")
+\keyword{ model }% __ONLY ONE__ keyword per line

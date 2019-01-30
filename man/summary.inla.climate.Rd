@@ -24,28 +24,47 @@ Other arguments.
 }
 }
 
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
+Returns an object of class \code{summary.inla.climate}, a list with components:
+\item{call}{
+The call for \code{object}.
+}
+\item{cpu.used}{
+Time spent on various tasks for \code{object}.
+}
+\item{hyperpar}{
+Summary statistics on the hyperparameters of \code{object}.
+}\item{TCR}{
+Summary statistics on the transient climate response of \code{object}, should there be any.
+}\item{tcr.samples}{
+Number of samples used to estimate the transient climate response of \code{object}, if such a procedure has been performed.
+}
+\item{mu.full.Bayesian}{
+Boolean describing if a complete sampling procedure for the forcing response was computed for \code{object}.
+}\item{mu.samples}{
+Number of samples used to estimate the forcing response of \code{object}, if such a procedure has been performed.
+}\item{neffp}{
+Expected effective number of parameters in \code{object}.
+}\item{mlik}{
+The log marginal likelihood of \code{object}.
+}\item{linear.predictor}{
+The linear predictor of \code{object}, if it has been computed.
+}\item{digits}{
+The number of significant digits used for \code{summary.inla.climate}.
+}\item{random.names}{
+The names of the random effects of \code{object}.
+}\item{family}{
+The family assigned to the likelihood of \code{object}.
+}
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
   Eirik Myrvoll-Nilsen \href{eirik.myrvoll-nilsen@uit.no}{eirik.myrvoll-nilsen@uit.no}
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 \code{\link{inla.climate}}
 }

@@ -1,8 +1,8 @@
 
 inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.01,restart.inla=FALSE, m = 4, stoc="fgn", print.progress=FALSE,
-                        inla.options=list(),
+                        inla.options = list(),
                         tcr.options = list(),
-                        mu.options = list()){
+                        mu.options = list() ){
 
   atch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
@@ -48,45 +48,50 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
   }
   inla.options=temp
   
-  default.tcr.options = list(mcsamples = 100000, seed = 1234)
-  temp = default.tcr.options
-  
-  if(length(tcr.options)>0){
-    for(i in 1:length(tcr.options)){
-      if(names(tcr.options)[i] %in% names(default.tcr.options)){
-        if(!is.list(tcr.options[[i]])){
-          temp[[ names(tcr.options)[i] ]] <- tcr.options[[i]]
-        }else{
-          for(j in 1:length(tcr.options[[i]])){
-            temp[[ names(tcr.options)[i] ]][[names(tcr.options[[i]])[j]]] <- tcr.options[[i]][[j]]
+  if(length(Qco2)>0){
+    default.tcr.options = list(mcsamples = 100000, seed = 1234)
+    temp = default.tcr.options
+    
+    if(length(tcr.options)>0){
+      for(i in 1:length(tcr.options)){
+        if(names(tcr.options)[i] %in% names(default.tcr.options)){
+          if(!is.list(tcr.options[[i]])){
+            temp[[ names(tcr.options)[i] ]] <- tcr.options[[i]]
+          }else{
+            for(j in 1:length(tcr.options[[i]])){
+              temp[[ names(tcr.options)[i] ]][[names(tcr.options[[i]])[j]]] <- tcr.options[[i]][[j]]
+            }
           }
+        }else{
+          temp[[names(tcr.options)[i]]] <- tcr.options[[i]]
         }
-      }else{
-        temp[[names(tcr.options)[i]]] <- tcr.options[[i]]
       }
     }
+    tcr.options = temp
   }
-  tcr.options = temp
   
-  default.mu.options = list(full.Bayesian = FALSE, mcsamples = 100000, seed = 1234)
-  temp = default.mu.options
-  
-  if(length(mu.options)>0){
-    for(i in 1:length(mu.options)){
-      if(names(mu.options)[i] %in% names(default.mu.options)){
-        if(!is.list(mu.options[[i]])){
-          temp[[ names(mu.options)[i] ]] <- mu.options[[i]]
-        }else{
-          for(j in 1:length(mu.options[[i]])){
-            temp[[ names(mu.options)[i] ]][[names(mu.options[[i]])[j]]] <- mu.options[[i]][[j]]
+  if(compute.mu){
+    default.mu.options = list(full.Bayesian = FALSE, mcsamples = 100000, seed = 1234)
+    temp = default.mu.options
+    
+    if(length(mu.options)>0){
+      for(i in 1:length(mu.options)){
+        if(names(mu.options)[i] %in% names(default.mu.options)){
+          if(!is.list(mu.options[[i]])){
+            temp[[ names(mu.options)[i] ]] <- mu.options[[i]]
+          }else{
+            for(j in 1:length(mu.options[[i]])){
+              temp[[ names(mu.options)[i] ]][[names(mu.options[[i]])[j]]] <- mu.options[[i]][[j]]
+            }
           }
+        }else{
+          temp[[names(mu.options)[i]]] <- mu.options[[i]]
         }
-      }else{
-        temp[[names(mu.options)[i]]] <- mu.options[[i]]
       }
     }
+    mu.options = temp
   }
-  mu.options = temp
+  
   
   
   lagmax = 1000L
@@ -209,7 +214,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
                    time=list(inla=tid.approx))
 
   results$misc$INLA.options = inla.options
-  if(length(Qco2)!=0){
+  if(length(Qco2)>0){
     results$TCR=list(mean=tcr.result$TCR.mean, sd=tcr.result$TCR.sd,
                     quant0.025=tcr.result$TCR.quant0.025,
                     quant0.5=tcr.result$TCR.quant0.5,

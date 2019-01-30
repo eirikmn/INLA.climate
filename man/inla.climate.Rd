@@ -87,19 +87,9 @@ The log marginal-likelihood of the fit obtained by INLA.
 }
 \item{\code{dic}}{The Deviance Information Criterion (DIC) for the fit, obtained by INLA.}
 }
-\references{
-%% ~put references to the literature/web site here ~
-
-}
 \author{
 Eirik Myrvoll-Nilsen \href{eirik.myrvoll-nilsen@uit.no}{eirik.myrvoll-nilsen@uit.no}
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 \code{\link[INLA]{inla}},\code{\link{inla.climate.mu}}
 }
@@ -128,3 +118,4 @@ if(require("INLA",quietly=TRUE)){
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ts}% use one of  RShowDoc("KEYWORDS")
+\keyword{model}

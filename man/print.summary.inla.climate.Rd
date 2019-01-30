@@ -1,26 +1,26 @@
-\name{print.inla.climate}
-\alias{print.inla.climate}
+\name{print.summary.inla.climate}
+\alias{print.summary.inla.climate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-  Print-function for the \code{inla.climate} model
+  Print function for a \code{summary.inla.climate} object
 }
 \description{
-  Prints key information regarding an INLA.climate fit and the TCR sampling procedure.
+  Displays the return object from \code{summary.inla.climate} to an easily readable format.
 }
 \usage{
 ## S3 method for class 'inla.climate'
-\method{print}{inla.climate}(x, digits=4L,...)
+\method{print}{summary.inla.climate}(x, digits=4L,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-     \code{inla.climate} object returned by \code{inla.climate} function. Also works if the TCR sampling procedure has been skipped.
+    Object of type \code{summary.inla.climate}.
 }
 \item{digits}{
 Number of digits to print.
 }
 \item{...}{
-Other arguments
+Other arguments.
 }
 }
 
@@ -48,7 +48,7 @@ if(require("INLA",quietly=TRUE)){
   y <- fgnsim + fgnmean
 
   result.climate <- inla.climate(data=y,forcing=forcing,m=m,Qco2=Qco2)
-  print(result.climate)
+  summary(result.climate)
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

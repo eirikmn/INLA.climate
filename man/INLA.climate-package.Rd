@@ -30,7 +30,7 @@ Rue, H., Martino, S. and Chopin, N. (2009)
 %~~ documentation directory ~~
 \keyword{ package }
 \seealso{
-
+\code{\link[INLA]{inla}}
 %~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
 }
 \examples{

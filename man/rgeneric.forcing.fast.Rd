@@ -30,18 +30,9 @@ This function sets up the radiative forcing long memory process as an \code{R-IN
 %% ...
 When used as an input argument for \code{inla.rgeneric.define} this will return a model eligible to be used within the R-INLA framework (see example).
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
 Eirik Myrvoll-Nilsen <\email{eirikmn91@gmail.com}>
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 \code{\link[INLA]{rgeneric}}
 }
@@ -79,7 +70,3 @@ Eirik Myrvoll-Nilsen <\email{eirikmn91@gmail.com}>
 
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

@@ -16,9 +16,13 @@ rgeneric.forcing.fast = function(
 
   Hmap = function(H) {
 
-    params = numeric(2*N)
-    for(i in 1:(2*N)){
-      params[i] = funks[[i]](H)
+    if(!is.null(envir)){
+      NN=get("N",envir)
+      ffunks=get("funks",envir)
+    }
+    params = numeric(2*NN)
+    for(i in 1:(2*NN)){
+      params[i] = ffunks[[i]](H)
     }
 
     return(params)
@@ -36,13 +40,19 @@ rgeneric.forcing.fast = function(
   }
 
   mu = function() {
+    
     # tid.rgen.start = proc.time()[[3]]
+    if(!is.null(envir)){
+      nn=get("n",envir)
+      NN=get("N",envir)
+      fforcing=get("forcing",envir)
+    }
     hyperparam = interpret.theta()
     H = hyperparam$H
     sf = 1/sqrt(hyperparam$scale)
     shift = hyperparam$shift
     #n = 30
-    means = numeric(n)
+    means = numeric(nn)
 
     #if(!is.loaded('Rc_mu')){
       #print('hallo')
@@ -50,21 +60,24 @@ rgeneric.forcing.fast = function(
       #dyn.load('./src/colmeansr.so')
     #}
     #means = mu.cwrapper(as.double(forcing),as.integer(n),as.double(H),as.double(sf),as.double(shift))
-    res = .C('Rc_mu',ans=as.matrix(means,ncol=1),as.double(forcing),as.integer(n),
-             as.double(H),as.double(sf),as.double(shift))
+    res = .C('Rc_mu',ans=as.matrix(means,ncol=1),as.double(fforcing),as.integer(nn),
+             as.double(H),as.double(sf),as.double(shift), PACKAGE="INLA.climate")
 
 
-    return(c(res$ans,rep(0,N*n)))
+    return(c(res$ans,rep(0,NN*nn)))
   }
 
   ar1maker = function(rho) {
+    if(!is.null(envir)){
+      nn=get("n",envir)
+    }
     # tid.rgen.start = proc.time()[[3]]
     tauu = 1 / (1 - rho ^ 2)
-    i = c(1L, n, 2L:(n - 1L), 1L:(n - 1L))
-    j = c(1L, n, 2L:(n - 1L), 2L:n)
+    i = c(1L, nn, 2L:(nn - 1L), 1L:(nn - 1L))
+    j = c(1L, nn, 2L:(nn - 1L), 2L:nn)
     xx = #tauu *
-      c(1/(1-rho^2), 1/(1-rho^2), rep((1 + rho ^ 2)/(1-rho^2), n - 2L),
-        rep(-rho/(1-rho^2), n - 1L))
+      c(1/(1-rho^2), 1/(1-rho^2), rep((1 + rho ^ 2)/(1-rho^2), nn - 2L),
+        rep(-rho/(1-rho^2), nn - 1L))
     Q = Matrix::sparseMatrix(
       i = i,
       j = j,
@@ -78,14 +91,39 @@ rgeneric.forcing.fast = function(
 
   graph = function()
   {
-    G = Q()
+    if(!is.null(envir)){
+      nn=get("n",envir)
+      NN=get("N",envir)
+      
+    }else{
+      nn=get("n",environment())
+      NN=get("N",environment())
+      
+    }
+     
+    
+    
+    ii = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
+    jj = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
+    xx = rep(1,2.5*NN*nn+nn-NN+nn*NN*NN/2)
+    
+    res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
+             as.integer(nn),as.integer(NN),as.double(rep(1/NN,NN)),as.double(rep(0.5,NN)),
+             as.double(tau),as.double(1.0), PACKAGE="INLA.climate")
+    
+    G = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
     G[G != 0] = 1
-
     return (G)
   }
 
   Q = function()
   {
+    
+    if(!is.null(envir)){
+      nn=get("n",envir)
+      NN=get("N",envir)
+    }
+    
     hyperparam = interpret.theta()
     H = hyperparam$H
 
@@ -93,13 +131,13 @@ rgeneric.forcing.fast = function(
     param = Hmap(hyperparam$H)
 
     sx = 1/sqrt(hyperparam$kappa)
-    alphas = param[1:N]
-    weights = param[(N+1):(2*N)]
+    alphas = param[1:NN]
+    weights = param[(NN+1):(2*NN)]
 
 
-     ii = numeric(2.5*N*n+n-N+n*N*N/2)
-     jj = numeric(2.5*N*n+n-N+n*N*N/2)
-     xx = numeric(2.5*N*n+n-N+n*N*N/2)
+     ii = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
+     jj = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
+     xx = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
      #if(!is.loaded('Rc_Q')){
      #  dyn.load(file.path(.Library,"INLA.climate/libs/Rc_Q.so"))
      #}
@@ -107,13 +145,13 @@ rgeneric.forcing.fast = function(
   #h.map.maker(4,1000,"fgn")
     #
     if(length(theta)==0){
-      sx=1;weights=rep(1/N,N);alphas=weights
+      sx=1;weights=rep(1/NN,NN);alphas=weights
     }
      #res = Q.cwrapper(as.integer(n),as.double(weights),as.double(alphas),
     #                  as.integer(N),as.double(tau),as.double(sx))
     #res = .C('myQr',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
-              as.integer(n),as.integer(N),as.double(weights),as.double(alphas),
+              as.integer(nn),as.integer(NN),as.double(weights),as.double(alphas),
               as.double(tau),as.double(sx), PACKAGE="INLA.climate")
 
 
@@ -125,14 +163,18 @@ rgeneric.forcing.fast = function(
 
   log.norm.const = function()
   {
+    if(!is.null(envir)){
+      nn=get("n",envir)
+      NN=get("N",envir)
+    }
     # tid.rgen.start = proc.time()[[3]]
     hyperparams = interpret.theta()
     param = Hmap(hyperparams$H)
     #N = length(param)/2
 
-    sum = n/2*log(tau)
-    for (i in 1:N){
-      sum = sum -(n-1)/2*log(1-param[i]^2)
+    sum = nn/2*log(tau)
+    for (i in 1:NN){
+      sum = sum -(nn-1)/2*log(1-param[i]^2)
     }
     tid.rgen.slutt = proc.time()[[3]]
 
@@ -141,6 +183,10 @@ rgeneric.forcing.fast = function(
 
   log.prior = function()
   {
+    if(!is.null(envir)){
+      
+      llprior.fun.H=get("lprior.fun.H",envir)
+    }
     # tid.rgen.start = proc.time()[[3]]
     #print("prior")
     params = interpret.theta()
@@ -151,7 +197,7 @@ rgeneric.forcing.fast = function(
     bb = 0.01
     lprior = INLA::inla.pc.dprec(params$kappa, u=a, alpha=b, log=TRUE) + log(params$kappa)
     lprior = lprior + INLA::inla.pc.dprec(params$scale, u=aa, alpha=bb, log=TRUE) + log(params$scale)
-    lprior = lprior + lprior.fun.H(theta[2])
+    lprior = lprior + llprior.fun.H(theta[2])
     #lprior = lprior + log(0.5)+log(1+1/(1+exp(-theta[2]))) - theta[2]-2*log(1+exp(-theta[2]))
     a=3
     lprior = lprior + dnorm(-a+2*a/(1+exp(-params$shift)),sd=0.2,log=TRUE)+log(2*a)-params$shift -2*log(1+exp(-params$shift))
@@ -172,6 +218,7 @@ rgeneric.forcing.fast = function(
   if(is.null(theta)){
     theta = initial()
     #envir=.GlobalEnv
+    
   }
 
   cmd = match.arg(cmd)

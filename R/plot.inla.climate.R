@@ -95,7 +95,8 @@ plot.inla.climate = function(x,
       lines(x$mu$quant0.025[1:n],lty=2)
       lines(x$mu$quant0.975[1:n],lty=2)
     }else{
-      plot(x$misc$data$y,pch=19,cex=0.8,xlab="",col="gray",ylab="",xlab="Data vs forcing response (2.5%, 50%, 97.5%)",ylim=range(x$misc$data$y,x$mu$mean))
+      plot(x$misc$data$y,pch=19,cex=0.8,col="gray",ylab="",xlab="Posterior mean",
+           ylim=range(x$misc$data$y,x$mu$mean),main="Forcing response vs data")
       lines(x$mu$mean[1:n],lwd=1.5)
     }
     

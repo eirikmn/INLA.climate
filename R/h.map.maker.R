@@ -12,7 +12,7 @@ h.map.maker = function(m=4,lagmax=1000,stoc="fgn"){
       folder.path=paste0(.libPaths()[i],"/INLA.climate/Hmapping/")
     }
   }
-  if(length(folderpath)==0){
+  if(length(folder.path)==0){
     stop("Could not find package directory, please make sure that INLA.climate is installed within one of the libraries displayed by '.libPaths()'.")
   }
   

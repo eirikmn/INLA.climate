@@ -1,9 +1,10 @@
-inla.climate.mu = function(result,forcing,nsamples=100000,full.Bayesian=FALSE,seed=1234,print.progress=FALSE){
+inla.climate.mu = function(result,forcing,quick=FALSE,nsamples=100000,seed=1234,print.progress=FALSE){
 
-  atch = tryCatch(attachNamespace("INLA"),error=function(x){})
+  catch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
     stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
+  T0=result$T0
   
   if(print.progress){
     cat("Starting Monte Carlo sampling with n=",nsamples," simulations..\n",sep="")
@@ -30,7 +31,7 @@ inla.climate.mu = function(result,forcing,nsamples=100000,full.Bayesian=FALSE,se
   #dyn.load('./src/colmeansr.so')
   #}
 
-  if(full.Bayesian){
+  if(!quick){
     mu.samples=matrix(NA,ncol=n,nrow=nsamples)
   }
 
@@ -42,7 +43,7 @@ inla.climate.mu = function(result,forcing,nsamples=100000,full.Bayesian=FALSE,se
     res = .C('Rc_mu',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),
              as.double(hyperpars[iter,1]),as.double(hyperpars[iter,2]),as.double(hyperpars[iter,3]))
 
-    if(full.Bayesian){
+    if(!quick){
       mu.samples[iter,]=res$mumeans
     }
 
@@ -56,7 +57,7 @@ inla.climate.mu = function(result,forcing,nsamples=100000,full.Bayesian=FALSE,se
 
   mu.sd=as.numeric(sqrt( 1/(nsamples-1)*( x2sumvec -2*mu.mean*xsumvec + nsamples*mu.mean^2 ) ))
 
-  if(full.Bayesian){
+  if(!quick){
     mu.quant0.025 = numeric(n)
     mu.quant0.5 = numeric(n)
     mu.quant0.975 = numeric(n)
@@ -78,13 +79,13 @@ inla.climate.mu = function(result,forcing,nsamples=100000,full.Bayesian=FALSE,se
     cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
-  ret = list(mu.mean=mu.mean, mu.sd = mu.sd)
+  ret = list(mu.mean=mu.mean+T0, mu.sd = mu.sd)
 
-  if(full.Bayesian){
-    ret$mu.quant0.025=mu.quant0.025
-    ret$mu.quant0.5=mu.quant0.5
-    ret$mu.quant0.975=mu.quant0.975
-    ret$samples=list(mu=mu.samples, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
+  if(!quick){
+    ret$mu.quant0.025=mu.quant0.025+T0
+    ret$mu.quant0.5=mu.quant0.5+T0
+    ret$mu.quant0.975=mu.quant0.975+T0
+    ret$samples=list(mu=mu.samples+T0, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
   }
   ret$time = tid.mc
   return(ret)

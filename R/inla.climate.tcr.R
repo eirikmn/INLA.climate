@@ -6,7 +6,7 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
   }
   
   if(print.progress){
-    cat("Starting Monte Carlo sampling with n=",nsamples," simulations..\n",sep="")
+    cat("Starting Monte Carlo sampling with n = ",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
   set.seed(seed)
   inla.seed = as.integer(runif(1)*.Machine$integer.max)

@@ -1,10 +1,11 @@
 
-inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.01,restart.inla=FALSE, m = 4, stoc="fgn", print.progress=FALSE,
+inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.01,restart.inla=FALSE,
+                        m = 4,stoc="fgn", print.progress=FALSE,
                         inla.options = list(),
                         tcr.options = list(),
                         mu.options = list() ){
 
-  atch = tryCatch(attachNamespace("INLA"),error=function(x){})
+  catch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
       stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
@@ -159,7 +160,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     }else{
       mu.quick=TRUE
     }
-    mu.result = inla.climate.mu(result.approx, forcing,quick=mu.quick, nsamples=mu.options$mcsamples,
+    mu.result = inla.climate.mu(result.approx, forcing, quick=mu.quick, nsamples=mu.options$mcsamples,
                                 seed=mu.options$seed, print.progress=print.progress)
   }
   

@@ -8,7 +8,7 @@ An INLA climate forcing model for global mean surface temperature
 Fits forcing data to a given temperature dataset using INLA. The undocumented forcing variables not included in \code{forcing} are collectively assumed a stochastic fGn process. Also uses Monte Carlo simulations to obtain Bayesian inference about the transient climate response.
 }
 \usage{
-inla.climate(data, forcing, Qco2 = NULL,compute.mu=FALSE, stepLength = 0.01, restart.inla = FALSE, m = 4, stoc = "fgn", print.progress = FALSE,
+inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, restart.inla = FALSE, m = 4, stoc = "fgn", print.progress = FALSE,
    inla.options = list(),
    tcr.options = list(),
    mu.options = list())
@@ -25,7 +25,7 @@ inla.climate(data, forcing, Qco2 = NULL,compute.mu=FALSE, stepLength = 0.01, res
      Qco2 The slope of the forcing when assuming a CO2 doubling in the future. Used for computing the transient climate response. Qco2 = NULL will skip the transient climate response sampling procedure.
 }
   \item{compute.mu}{
-    Boolean variable indicating whether or not the \code{forcing} temperature response should be computed explicitly. Doing so will increase runtime.
+    Decides if and how the \code{forcing} temperature response should be explicitly computed. Doing so will significantly increase runtime. If method \code{compute.mu=1} is chosen, the samples will not be stored and the quantiles will not be computed. If \code{compute.mu=2} is chosen, full Bayesian inference is returned. Method \code{2} requires significantly more memory.
 }
   \item{stepLength}{
     Numerical value which sets the steplength for the numerical scheme within INLA. A poor convergence can sometimes be improved by adjusting this.

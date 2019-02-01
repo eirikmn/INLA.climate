@@ -1,5 +1,5 @@
 
-inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.01,restart.inla=FALSE, m = 4, stoc="fgn", print.progress=FALSE,
+inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.01,restart.inla=FALSE, m = 4, stoc="fgn", print.progress=FALSE,
                         inla.options = list(),
                         tcr.options = list(),
                         mu.options = list() ){
@@ -69,9 +69,11 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
     }
     tcr.options = temp
   }
-  
-  if(compute.mu){
-    default.mu.options = list(full.Bayesian = FALSE, mcsamples = 100000, seed = 1234)
+  if(length(compute.mu)==0){
+    compute.mu="No"
+  }
+  if(compute.mu %in% c(1,2,"full","complete","quick","fast")){
+    default.mu.options = list(mcsamples = 100000, seed = 1234)
     temp = default.mu.options
     
     if(length(mu.options)>0){
@@ -139,22 +141,28 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
     feil = "\n Convergence can sometimes be improved by changing the step length h."
     stop(paste0(result.approx,feil))
   }
-
+  
   tid.approx.slutt = proc.time()[[3]]
   tid.approx = tid.approx.slutt-tid.approx.start
   if(print.progress){
     cat("INLA completed in ",tid.approx," seconds\n",sep="")
   }
+  result.approx$T0=t0
 
   if(!is.null(Qco2)){
     tcr.result = inla.climate.tcr(result.approx,Qco2,nsamples=tcr.options$mcsamples,
                                   seed=tcr.options$seed, print.progress=print.progress)
   }
-  if(compute.mu){
-    mu.result = inla.climate.mu(result.approx, forcing, nsamples=mu.options$mcsamples,
-                                full.Bayesian=mu.options$full.Bayesian,seed=mu.options$seed,
-                                print.progress=print.progress)
+  if(compute.mu %in% c(1,2,"full","complete","quick","fast") ){
+    if(compute.mu %in% c(2,"full","complete")){
+      mu.quick = FALSE
+    }else{
+      mu.quick=TRUE
+    }
+    mu.result = inla.climate.mu(result.approx, forcing,quick=mu.quick, nsamples=mu.options$mcsamples,
+                                seed=mu.options$seed, print.progress=print.progress)
   }
+  
   if(print.progress){
     cat("Finishing up...\n",sep="")
   }
@@ -165,7 +173,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
   F0.approx = INLA::inla.emarginal(function(x) x,margs$`Theta4 for idy`)
 
 
-  run.creds = T
+  run.creds = TRUE
   if(run.creds){ #marginals som matrix
     margs.approx = result.approx$marginals.hyperpar
     marg.H = INLA::inla.tmarginal(function(x) 0.5+0.5/(1+exp(-x)),margs.approx$`Theta2 for idy`)
@@ -205,11 +213,11 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
                                     sigmaf=zmarg.sf$quant0.975,
                                     F0=zmarg.F0$quant0.975  ),
                    marginals=list(H=marg.H, sigmax=marg.sx,sigmaf=marg.sf,F0=marg.F0) ),
-                   latent=list(means=result.approx$summary.random$idy$mean[1:n],
+                   model.fit=list(means=result.approx$summary.random$idy$mean[1:n]+t0,
                              sd = result.approx$summary.random$idy$sd[1:n],
-                             quant0.025=result.approx$summary.random$idy$`0.025quant`[1:n],
-                             quant0.5=result.approx$summary.random$idy$`0.5quant`[1:n],
-                             quant0.975=result.approx$summary.random$idy$`0.975quant`[1:n]),
+                             quant0.025=result.approx$summary.random$idy$`0.025quant`[1:n]+t0,
+                             quant0.5=result.approx$summary.random$idy$`0.5quant`[1:n]+t0,
+                             quant0.975=result.approx$summary.random$idy$`0.975quant`[1:n]+t0),
                      #hpd.95=list(H=hpd.H,sigmaf=hpd.sf,sigmax=hpd.sx,hpd.F0=hpd.F0),
                    time=list(inla=tid.approx))
 
@@ -224,13 +232,14 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
                       TCR=tcr.result$samples$TCR, H=tcr.result$samples$H,
                       sigmaf=tcr.result$samples$sigmaf,F0=tcr.result$samples$F0))
         results$time$TCR.option = tcr.result$time
+        results$misc$TCR.option$Qco2 = Qco2
         results$misc$TCR.option$mcsamples = tcr.options$mcsamples
         results$misc$TCR.option$seed = tcr.options$seed
   }
 
-  if(compute.mu){
+  if(compute.mu %in% c(1,2,"full","complete","quick","fast")){
     results$mu = list(mean=mu.result$mu.mean, sd=mu.result$mu.sd)
-    if(mu.options$full.Bayesian){
+    if(compute.mu %in% c(2,"full","complete")){
       results$mu$quant0.025=mu.result$mu.quant0.025
       results$mu$quant0.5=mu.result$mu.quant0.5
       results$mu$quant0.975=mu.result$mu.quant0.975
@@ -240,7 +249,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
       )
     }
     results$time$mu = mu.result$time
-    results$misc$mu.option$full.Bayesian = mu.options$full.Bayesian
+    results$misc$mu.option$compute.mu = compute.mu
     results$misc$mu.option$mcsamples=mu.options$mcsamples
     results$misc$mu.option$seed = mu.options$seed
   }
@@ -251,9 +260,8 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=FALSE, stepLength=0.
   }
   
   results$misc$call = kall
-  results$misc$data = df
+  results$misc$data = data.frame(y=(df$y+t0),idy=(df$idy))
   results$misc$forcing = forcing
-  results$misc$Qco2 = Qco2
   results$misc$m = m
   
   results$misc$stoc = stoc

@@ -7,7 +7,7 @@ print.inla.climate = function(x,digits=4L,...){
   cpu = round(x$time$inla,digits=digits)
   cpu.navn="Running INLA"
   if(!is.null(x$TCR)){
-    cpu=c(cpu,round(x$time$TCR,digits=digits))
+    cpu=c(cpu,round(x$time$TCR,digits=digits))#fit model to observed temperatures that includes forcing contributions
     cpu.navn=c(cpu.navn,"Sampling TCR")
   }
   if(!is.null(x$mu)){
@@ -40,7 +40,7 @@ print.inla.climate = function(x,digits=4L,...){
     cat("\nTCR estimate obtained by ",format(x$misc$TCR.option$mcsamples,scientific=F,digits=digits)," Monte Carlo samples with CO2 coefficient ",x$misc$Qco2,".\n",sep="")
   }
   if(!is.null(x$time$mu)){
-    if(x$misc$mu.option$full.Bayesian){
+    if(x$misc$mu.option$compute.mu %in% c(2,"full","complete")){
       cat("\nFull Bayesian analysis of forcing response computed with ",format(x$misc$mu.option$mcsamples,scientific=F,digits=digits)," Monte Carlo samples.\n",sep="")
     }else{
       cat("\nQuick estimate of forcing response computed with ",format(x$misc$mu.option$mcsamples,scientific=F,digits=digits)," Monte Carlo samples.\n",sep="")

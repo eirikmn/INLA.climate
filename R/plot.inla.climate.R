@@ -30,10 +30,10 @@ plot.inla.climate = function(x,
     
     figure.count <- new.plot(postscript,pdf,prefix,figure.count,...) +1
     par(mfrow=c(1,1),mar=(c(5,4,4,2)+0.1))
-    plot(x$latent$quant0.5,lwd=1.5,type="l",ylim=range(x$latent$quant0.025,x$latent$quant0.975),
-         xlab="Posterior mean: 2.5%, 50%, 97.5%",ylab="", main="Latent field")
-    lines(x$latent$quant0.025[1:n],lty=2)
-    lines(x$latent$quant0.975[1:n],lty=2)
+    plot(x$model.fit$quant0.5,lwd=1.5,type="l",ylim=range(x$model.fit$quant0.025,x$model.fit$quant0.975),
+         xlab="Posterior mean: 2.5%, 50%, 97.5%",ylab="", main="Model fit")
+    lines(x$model.fit$quant0.025[1:n],lty=2)
+    lines(x$model.fit$quant0.975[1:n],lty=2)
     if(postscript || pdf){
       if (names(dev.cur()) != "null device") {
         dev.off()
@@ -87,7 +87,7 @@ plot.inla.climate = function(x,
     figure.count <- new.plot(postscript,pdf,prefix,figure.count,...) +1
     par(mfrow=c(1,1),mar=(c(5,4,4,2)+0.1))
     
-    if(x$misc$mu.option$full.Bayesian){
+    if(x$misc$mu.option$compute.mu %in% c(2,"full","complete")){
       plot(x$misc$data$y,pch=19,cex=0.8,col="gray",ylab="", main="Forcing response vs data",
            xlab="Posterior mean: 2.5%, 50%, 97.5%",
            ylim=range(x$misc$data$y,x$mu$quant0.025,x$mu$quant0.975))

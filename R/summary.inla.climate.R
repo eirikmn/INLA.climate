@@ -44,7 +44,7 @@ summary.inla.climate = function(object,digits=4L,...){
   ut=c(ut, list(hyperpar=hypers))
   
   if(!is.null(object$TCR)){
-    tcr=matrix(c(object$TCR$mean,object$TCR$sd,object$TCR$quant0.025,object$TCR$quant0.5,object$TCR$quant0.975),nrow=1)
+    tcr=matrix(round(c(object$TCR$mean,object$TCR$sd,object$TCR$quant0.025,object$TCR$quant0.5,object$TCR$quant0.975),digits=digits),nrow=1)
     tcr=as.data.frame(tcr)
     colnames(tcr)=c("mean","sd","0.025quant","0.5quant","0.975quant")
     rownames(tcr)="TCR"
@@ -52,7 +52,7 @@ summary.inla.climate = function(object,digits=4L,...){
   }
   
   if(!is.null(object$mu)){
-    ut=c(ut, list(mu.full.Bayesian=object$misc$mu.option$full.Bayesian,mu.samples=object$misc$mu.option$mcsamples))
+    ut=c(ut, list(mu.full.Bayesian= object$misc$mu.option$compute.mu %in% c(2,"full","complete"),mu.samples=object$misc$mu.option$mcsamples))
   }
   
   neffp = object$inla.result$neffp
@@ -113,10 +113,10 @@ print.summary.inla.climate = function(x,digits=4L,...){
   
   if(!is.null(x$TCR)){
     cat("Transient climate response computed from ",format(x$tcr.samples,digits=digits,scientific=FALSE)," samples:\n",sep="")
-    print(format(x$TCR))
+    print(format(x$TCR,digits=digits))
     cat("\n")
   }
-  if(!is.null(x$mu.full.Bayesian)){
+  if(!is.null(x$mu)){
     if(x$mu.full.Bayesian){
       cat("Full Bayesian analysis of forcing response computed with ",format(x$mu.samples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
     }else{

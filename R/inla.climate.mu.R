@@ -4,7 +4,17 @@ inla.climate.mu = function(result,forcing,quick=FALSE,nsamples=100000,seed=1234,
   if(length(find.package("INLA",quiet=TRUE))==0){
     stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
-  T0=result$T0
+  
+  
+  if(class(result)=="inla.climate"){
+    climate.res = result$inla.result
+  }else if(class(result)=="inla"){
+    climate.res = result
+  }else{
+    stop("Input 'result' not a valid class.")
+  }
+  
+  T0=climate.res$T0
   
   if(print.progress){
     cat("Starting Monte Carlo sampling with n=",nsamples," simulations..\n",sep="")
@@ -12,11 +22,11 @@ inla.climate.mu = function(result,forcing,quick=FALSE,nsamples=100000,seed=1234,
   set.seed(seed)
   inla.seed = as.integer(runif(1)*.Machine$integer.max)
 
-  #n=result$misc$configs$contents$length[1]
+  #n=climate.res$misc$configs$contents$length[1]
   n=length(forcing)
 
   #x = inla.posterior.sample(nsamples,r,seed=inla.seed) #int.strategy=grid
-  x = INLA::inla.hyperpar.sample(nsamples,result)
+  x = INLA::inla.hyperpar.sample(nsamples,climate.res)
   hyperpars = matrix(NA,nrow=nsamples,ncol=4) #c(H,sf,F0,TCR)
 
 
@@ -88,6 +98,7 @@ inla.climate.mu = function(result,forcing,quick=FALSE,nsamples=100000,seed=1234,
     ret$samples=list(mu=mu.samples+T0, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
   }
   ret$time = tid.mc
+  class(ret) = "inla.climate.mu"
   return(ret)
 
 }

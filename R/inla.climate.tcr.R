@@ -1,9 +1,17 @@
 inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress=FALSE){
-
+  
   atch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
     stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
+  if(class(result)=="inla.climate"){
+    climate.res = result$inla.results
+  }else if(class(result)=="inla"){
+    climate.res = result
+  }else{
+    stop("Input 'result' not a valid class.")
+  }
+  
   
   if(print.progress){
     cat("Starting Monte Carlo sampling with n = ",format(nsamples,scientific=F)," simulations..\n",sep="")
@@ -11,10 +19,10 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
   set.seed(seed)
   inla.seed = as.integer(runif(1)*.Machine$integer.max)
 
-  #n=result$misc$configs$contents$length[1]
+  #n=climate.res$misc$configs$contents$length[1]
 
   #x = inla.posterior.sample(nsamples,r,seed=inla.seed) #int.strategy=grid
-  x = INLA::inla.hyperpar.sample(nsamples,result)
+  x = INLA::inla.hyperpar.sample(nsamples,climate.res)
   hyperpars = matrix(NA,nrow=nsamples,ncol=4) #c(H,sf,shift,TCR)
   zmc = 1:80
 
@@ -55,12 +63,14 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
     cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
-
-  return(list(TCR.mean=mean(hyperpars[,4]),TCR.sd = sd(hyperpars[,4]),
-              TCR.quant0.025=INLA::inla.qmarginal(0.025,mcfit),
-              TCR.quant0.5=INLA::inla.qmarginal(0.5,mcfit),
-              TCR.quant0.975=INLA::inla.qmarginal(0.975,mcfit),
-              samples=list(
-   TCR=hyperpars[,4],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]),
-   time=tid.mc))
+  ret = list(TCR.mean=mean(hyperpars[,4]),TCR.sd = sd(hyperpars[,4]),
+             TCR.quant0.025=INLA::inla.qmarginal(0.025,mcfit),
+             TCR.quant0.5=INLA::inla.qmarginal(0.5,mcfit),
+             TCR.quant0.975=INLA::inla.qmarginal(0.975,mcfit),
+             samples=list(
+               TCR=hyperpars[,4],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]),
+             time=tid.mc)
+  class(ret) = "inla.climate.tcr"
+  
+  return(ret)
 }

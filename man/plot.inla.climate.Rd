@@ -57,24 +57,10 @@ Additional arguments to \code{postscripts()}, \code{pdf()} or \code{dev.new()}.
 }
 \examples{
 if(require("INLA",quietly=TRUE)){
-  library(longmemo)
-  n <- 300
-  H <- 0.8
-  m <- 4
-  Qco2 <- 3.8
-  forcing <- arima.sim(n=n, list(ar=c(0.6)),sd = 1)
-  fgnsim <- simFGN0(n,H)
-
-  fgnmean <- numeric(n)
-  struktur <- (0.5+seq(0,n-1,length.out=n))^(0.8-3/2)
-  for(i in 1:n){
-      fgnmean[i] <- rev(struktur[1:i])\%*\%forcing[1:i]
-  }
-  y <- fgnsim + fgnmean
-
-  result.climate <- inla.climate(data=y,forcing=forcing,m=m,Qco2=Qco2)
+  data(GISS_E2_R)
+  result.climate <- inla.climate(data=GISS_E2_R$Temperature,forcing=GISS_E2_R$Forcing)
   plot(result.climate)
-  }
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

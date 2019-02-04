@@ -13,7 +13,7 @@ inla.climate.tcr(result, Qco2, nsamples = 100000, seed = 1234, print.progress = 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{result}{
-     An \code{R-INLA} object. Can be accessed using \code{results$inla.result}, where \code{results} is the returned object from the \code{inla.climate} function.
+     An \code{inla.climate} or an \code{inla} object which can be accessed using \code{results$inla.result}, where \code{results} is the returned object from the \code{inla.climate} function.
 }
   \item{Qco2}{
      The slope of the forcing when assuming a CO2 doubling in the future.
@@ -34,6 +34,7 @@ inla.climate.tcr(result, Qco2, nsamples = 100000, seed = 1234, print.progress = 
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
+Returns a list of class \code{inla.climate.tcr} which contains the following objects:
 \item{\code{TCR.mean}}{The mean value of the transient climate response simulations.}
 \item{\code{TCR.sd}}{The standard deviation of the transient climate response simulations.}
 \item{\code{TCR.quant0.025}}{The 2.5\% quantile value of the transient climate response simulations.}
@@ -57,24 +58,10 @@ Fredriksen, H.B., Rypdal, M. (2017)
 }
 \examples{
 if(require("INLA",quietly=TRUE)){
-  library(longmemo)
-  n <- 300
-  H <- 0.8
-  m <- 4
-  forcing <- arima.sim(n=n, list(ar=c(0.6)),sd = 1)
-  fgnsim <- simFGN0(n,H)
-
-  fgnmean <- numeric(n)
-  struktur <- (0.5+seq(0,n-1,length.out=n))^(H-3/2)
-  for(i in 1:n){
-      fgnmean[i] <- rev(struktur[1:i])\%*\%forcing[1:i]
-  }
-  y <- fgnsim + fgnmean
-
-  result.climate <- inla.climate(data=y,forcing=forcing,m=m,Qco2=NULL)
-  Qco2 <- 3.8
-  result.tcr <- inla.climate.tcr(result.climate$inla.result,Qco2,nsamples=10000)
-  }
+  data(GISS_E2_R)
+  result.climate <- inla.climate(data=GISS_E2_R$Temperature,forcing=GISS_E2_R$Forcing)
+  result.tcr <- inla.climate.tcr(result.climate$inla.result,Qco2=3.8)
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

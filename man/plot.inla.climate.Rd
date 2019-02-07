@@ -8,7 +8,6 @@
   Plots results obtained from the INLA.climate fit and the TCR sampling procedure.
 }
 \usage{
-## S3 method for class 'inla.climate'
 \method{plot}{inla.climate}(x,  plot.random=TRUE,
                                 plot.hyperpars=TRUE,
                                 plot.tcr.samples=TRUE,

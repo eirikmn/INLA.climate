@@ -8,7 +8,6 @@
   Displays the return object from \code{summary.inla.climate} to an easily readable format.
 }
 \usage{
-## S3 method for class 'inla.climate'
 \method{print}{summary.inla.climate}(x, digits=4L,...)
 }
 %- maybe also 'usage' for other objects documented here.

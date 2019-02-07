@@ -8,7 +8,6 @@
   Prints key information regarding an INLA.climate fit and the TCR sampling procedure.
 }
 \usage{
-## S3 method for class 'inla.climate'
 \method{print}{inla.climate}(x, digits=4L,...)
 }
 %- maybe also 'usage' for other objects documented here.

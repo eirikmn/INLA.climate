@@ -8,7 +8,6 @@
   Displays a clear summary of the information contained in the list returned by the \code{inla.climate} function.
 }
 \usage{
-## S3 method for class 'inla.climate'
 \method{summary}{inla.climate}(object, digits=4L,...)
 }
 %- maybe also 'usage' for other objects documented here.

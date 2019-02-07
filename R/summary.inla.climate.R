@@ -48,11 +48,15 @@ summary.inla.climate = function(object,digits=4L,...){
     tcr=as.data.frame(tcr)
     colnames(tcr)=c("mean","sd","0.025quant","0.5quant","0.975quant")
     rownames(tcr)="TCR"
-    ut=c(ut, list(TCR=tcr,tcr.samples=object$misc$TCR.option$mcsamples))
+    ut=c(ut, list(TCR=tcr,tcr.nsamples=object$misc$TCR.options$nsamples))
   }
   
   if(!is.null(object$mu)){
-    ut=c(ut, list(mu.full.Bayesian= object$misc$mu.option$compute.mu %in% c(2,"full","complete"),mu.samples=object$misc$mu.option$mcsamples))
+    mu=matrix(round(c(object$mu$mean,object$mu$sd,object$mu$quant0.025,object$mu$quant0.5,object$mu$quant0.975),digits=digits),nrow=1)
+    mu=as.data.frame(mu)
+    
+    #### FIKS DETTE
+    ut=c(ut, list(mu = mu,mu.full.Bayesian= object$misc$mu.options$compute.mu %in% c(2,"full","complete"),mu.nsamples=object$misc$mu.options$nsamples))
   }
   
   neffp = object$inla.result$neffp
@@ -112,15 +116,16 @@ print.summary.inla.climate = function(x,digits=4L,...){
   }
   
   if(!is.null(x$TCR)){
-    cat("Transient climate response computed from ",format(x$tcr.samples,digits=digits,scientific=FALSE)," samples:\n",sep="")
+    cat("Transient climate response computed from ",format(x$tcr.nsamples,digits=digits,scientific=FALSE)," samples:\n",sep="")
     print(format(x$TCR,digits=digits))
     cat("\n")
   }
+  
   if(!is.null(x$mu)){
     if(x$mu.full.Bayesian){
-      cat("Full Bayesian analysis of forcing response computed with ",format(x$mu.samples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
+      cat("Full Bayesian analysis of forcing response computed with ",format(x$mu.nsamples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
     }else{
-      cat("Quick computation of forcing response computed with ",format(x$mu.samples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
+      cat("Quick computation of forcing response computed with ",format(x$mu.nsamples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
     }
   }
   

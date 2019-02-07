@@ -1,10 +1,9 @@
-inla.climate.mu = function(result,forcing,quick=FALSE,nsamples=100000,seed=1234,print.progress=FALSE){
+inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,seed=1234,print.progress=FALSE){
 
   catch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
     stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
-  
   
   if(class(result)=="inla.climate"){
     climate.res = result$inla.result
@@ -13,11 +12,17 @@ inla.climate.mu = function(result,forcing,quick=FALSE,nsamples=100000,seed=1234,
   }else{
     stop("Input 'result' not a valid class.")
   }
+  if(is.null(T0.corr)){
+    if(!is.null(result$climate.misc$T0)){
+      T0.corr = result$climate.misc$T0
+    }else{
+      T0.corr=0
+    }
+  }
   
-  T0=climate.res$T0
   
   if(print.progress){
-    cat("Starting Monte Carlo sampling with n=",nsamples," simulations..\n",sep="")
+    cat("Starting Monte Carlo sampling with n=",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
   set.seed(seed)
   inla.seed = as.integer(runif(1)*.Machine$integer.max)
@@ -89,16 +94,16 @@ inla.climate.mu = function(result,forcing,quick=FALSE,nsamples=100000,seed=1234,
     cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
-  ret = list(mu.mean=mu.mean+T0, mu.sd = mu.sd)
+  ret = list(mu.mean=mu.mean+T0.corr, mu.sd = mu.sd)
 
   if(!quick){
-    ret$mu.quant0.025=mu.quant0.025+T0
-    ret$mu.quant0.5=mu.quant0.5+T0
-    ret$mu.quant0.975=mu.quant0.975+T0
-    ret$samples=list(mu=mu.samples+T0, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
+    ret$mu.quant0.025=mu.quant0.025+T0.corr
+    ret$mu.quant0.5=mu.quant0.5+T0.corr
+    ret$mu.quant0.975=mu.quant0.975+T0.corr
+    ret$samples=list(mu=mu.samples+T0.corr, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
   }
   ret$time = tid.mc
-  class(ret) = "inla.climate.mu"
+  
   return(ret)
 
 }

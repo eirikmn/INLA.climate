@@ -4,8 +4,9 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
   if(length(find.package("INLA",quiet=TRUE))==0){
     stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
+  
   if(class(result)=="inla.climate"){
-    climate.res = result$inla.results
+    climate.res = result$inla.result
   }else if(class(result)=="inla"){
     climate.res = result
   }else{
@@ -21,6 +22,7 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
 
   #n=climate.res$misc$configs$contents$length[1]
 
+  
   #x = inla.posterior.sample(nsamples,r,seed=inla.seed) #int.strategy=grid
   x = INLA::inla.hyperpar.sample(nsamples,climate.res)
   hyperpars = matrix(NA,nrow=nsamples,ncol=4) #c(H,sf,shift,TCR)
@@ -70,7 +72,6 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
              samples=list(
                TCR=hyperpars[,4],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]),
              time=tid.mc)
-  class(ret) = "inla.climate.tcr"
   
   return(ret)
 }

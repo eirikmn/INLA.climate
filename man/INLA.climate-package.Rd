@@ -37,14 +37,15 @@ Rue, H., Martino, S. and Chopin, N. (2009)
 
 if(require("INLA",quietly=TRUE)){
   data(GISS_E2_R)
-  result.climate <- inla.climate(data=GISS_E2_R$Temperature,forcing=GISS_E2_R$Forcing)
   
   m <- 4
   Qco2 <- 3.8
   compute.mu <- "full"
   
   result.climate <- inla.climate(data = GISS_E2_R$Temperature, forcing = GISS_E2_R$Forcing,
-                          m = m, Qco2 = Qco2, compute.mu = compute.mu)
+                          Qco2 = Qco2, compute.mu = compute.mu, m = m )
+  print(result.climate$time)
+  print(result.climate$hyperparam$means)
   summary(result.climate)
   plot(result.climate)
 }

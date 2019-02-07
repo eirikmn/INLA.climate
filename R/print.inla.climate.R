@@ -37,13 +37,14 @@ print.inla.climate = function(x,digits=4L,...){
   
   cat("\nNoise model (",x$misc$stoc,") was approximated using ",x$misc$m," AR(1) processes.\n",sep="")
   if(!is.null(x$time$TCR)){
-    cat("\nTCR estimate obtained by ",format(x$misc$TCR.option$mcsamples,scientific=F,digits=digits)," Monte Carlo samples with CO2 coefficient ",x$misc$Qco2,".\n",sep="")
+    cat("\nTCR estimate obtained by ",format(x$misc$TCR.options$nsamples,scientific=F,digits=digits),
+        " Monte Carlo samples with CO2 coefficient ",x$misc$TCR.options$Qco2,".\n",sep="")
   }
   if(!is.null(x$time$mu)){
-    if(x$misc$mu.option$compute.mu %in% c(2,"full","complete")){
-      cat("\nFull Bayesian analysis of forcing response computed with ",format(x$misc$mu.option$mcsamples,scientific=F,digits=digits)," Monte Carlo samples.\n",sep="")
+    if(x$misc$mu.options$compute.mu %in% c(2,"full","complete")){
+      cat("\nFull Bayesian analysis of forcing response computed with ",format(x$misc$mu.options$nsamples,scientific=F,digits=digits)," Monte Carlo samples.\n",sep="")
     }else{
-      cat("\nQuick estimate of forcing response computed with ",format(x$misc$mu.option$mcsamples,scientific=F,digits=digits)," Monte Carlo samples.\n",sep="")
+      cat("\nQuick estimate of forcing response computed with ",format(x$misc$mu.options$nsamples,scientific=F,digits=digits)," Monte Carlo samples.\n",sep="")
     }
     
   }

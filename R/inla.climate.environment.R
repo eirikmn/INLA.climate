@@ -64,6 +64,7 @@ process.inla = function(object, misc=NULL){
   
   results$misc$INLA.options = object$climate.misc$INLA.options
   results$misc$TCR.options  = object$climate.misc$TCR.options
+  results$misc$TCR.options$Qco2 = object$climate.misc$Qco2
   results$misc$mu.options   = object$climate.misc$mu.options
   results$misc$mu.options$compute.mu=object$climate.misc$compute.mu
   

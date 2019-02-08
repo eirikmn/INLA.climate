@@ -5,11 +5,12 @@ process.inla = function(object, misc=NULL){
     stop("Could not find inla.climate information.")
   }
   #misc: INLA.options, call, data, forcing, m, stoc, t0, stepLength, restart, time
+  a=3
   margs = object$marginals.hyperpar
   H.approx = INLA::inla.emarginal(function(x) 0.5+0.5/(1+exp(-x)),margs$`Theta2 for idy`)
   sigmax.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta1 for idy`)
   sigmaf.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta3 for idy`)
-  F0.approx = INLA::inla.emarginal(function(x) x,margs$`Theta4 for idy`)
+  F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta4 for idy`)
   
   
   run.creds = TRUE
@@ -18,7 +19,8 @@ process.inla = function(object, misc=NULL){
     marg.H = INLA::inla.tmarginal(function(x) 0.5+0.5/(1+exp(-x)),margs.approx$`Theta2 for idy`)
     marg.sx = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta1 for idy`)
     marg.sf = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta3 for idy`)
-    marg.F0 = margs.approx$`Theta4 for idy`
+    marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x))),margs.approx$`Theta4 for idy`)
+    
     zmarg.H = INLA::inla.zmarginal(marg.H,silent=T)
     zmarg.sx = INLA::inla.zmarginal(marg.sx,silent=T)
     zmarg.sf = INLA::inla.zmarginal(marg.sf,silent=T)

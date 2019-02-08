@@ -19,7 +19,7 @@ process.inla = function(object, misc=NULL){
     marg.H = INLA::inla.tmarginal(function(x) 0.5+0.5/(1+exp(-x)),margs.approx$`Theta2 for idy`)
     marg.sx = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta1 for idy`)
     marg.sf = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta3 for idy`)
-    marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x))),margs.approx$`Theta4 for idy`)
+    marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta4 for idy`)
     
     zmarg.H = INLA::inla.zmarginal(marg.H,silent=T)
     zmarg.sx = INLA::inla.zmarginal(marg.sx,silent=T)

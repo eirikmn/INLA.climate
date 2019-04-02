@@ -24,7 +24,7 @@ process.inla = function(object, misc=NULL){
     zmarg.H = INLA::inla.zmarginal(marg.H,silent=T)
     zmarg.sx = INLA::inla.zmarginal(marg.sx,silent=T)
     zmarg.sf = INLA::inla.zmarginal(marg.sf,silent=T)
-    zmarg.F0 = INLA::inla.zmarginal(margs.approx$`Theta4 for idy`,silent=T)
+    zmarg.F0 = INLA::inla.zmarginal(marg.F0,silent=T)
     
     hpd.H = INLA::inla.hpdmarginal(0.95,marg.H)
     hpd.sx = INLA::inla.hpdmarginal(0.95,marg.sx)

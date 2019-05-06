@@ -5,7 +5,7 @@
 GISS-E2-R temperature and forcing dataset.
 }
 \description{
-This is the GISS-E2-R temperature dataset, submitted by the Goddard Institute for Space Studies (GISS) for the CMIP5 data repository. Also includes radiative forcing data obtained by combining the forcing data from Forster et al. (2013) and Hansen et al. (2010) such that the 18-yr moving averages are equal. The forcing slope coefficient when assuming a CO2-doubling, which is used to estimate the TCR, is 3.8.
+This is the GISS-E2-R temperature dataset, submitted by the Goddard Institute for Space Studies (GISS) for the CMIP5 data repository. Also includes radiative forcing data obtained by combining the forcing data from Forster et al. (2013) and Hansen et al. (2010) such that the 18-yr moving averages are equal. The forcing slope coefficient when assuming a 1\% annual increase of CO_2, which is used to estimate the TCR, is 3.8.
 }
 \usage{
 data(GISS_E2_R)

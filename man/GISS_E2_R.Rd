@@ -5,7 +5,7 @@
 GISS-E2-R temperature and forcing dataset.
 }
 \description{
-This is the GISS-E2-R temperature dataset, submitted by the Goddard Institute for Space Studies (GISS) for the CMIP5 data repository. Also includes radiative forcing data from ... .  The forcing data has been modified by taking the moving averages over a 17 year period in order to make it more similar the adjusted forcing of Forster (SITER NOE).
+This is the GISS-E2-R temperature dataset, submitted by the Goddard Institute for Space Studies (GISS) for the CMIP5 data repository. Also includes radiative forcing data obtained by combining the forcing data from Forster et al. (2013) and Hansen et al. (2010) such that the 18-yr moving averages are equal. The forcing slope coefficient when assuming a CO2-doubling, which is used to estimate the TCR, is 3.8.
 }
 \usage{
 data(GISS_E2_R)
@@ -30,7 +30,10 @@ National Aeronautics and Space Administration (NASA) - Goddard Institute for Spa
 \references{
 GISTEMP Team, 2018: GISS Surface Temperature Analysis (GISTEMP). NASA Goddard Institute for Space Studies. Dataset accessed 20YY-MM-DD at https://data.giss.nasa.gov/gistemp/.
 
-Hansen, J., R. Ruedy, M. Sato, and K. Lo, 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
 }
 \examples{
 # Load data

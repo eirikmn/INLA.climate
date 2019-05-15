@@ -113,15 +113,16 @@ process.tcr = function(object, tcr.result, misc=NULL){
   }else{
     stop("Invalid 'object' class.")
   }
-    ret$TCR=list(mean=tcr.result$TCR.mean, sd=tcr.result$TCR.sd,
-                     quant0.025=tcr.result$TCR.quant0.025,
-                     quant0.5=tcr.result$TCR.quant0.5,
-                     quant0.975=tcr.result$TCR.quant0.975,
-                     #creds=tcr.result$creds,
-                     samples=list(
-                       TCR=tcr.result$samples$TCR, H=tcr.result$samples$H,
-                       sigmaf=tcr.result$samples$sigmaf,F0=tcr.result$samples$F0))
-    ret$time$TCR = tcr.result$time
+    # ret$TCR=list(mean=tcr.result$TCR.mean, sd=tcr.result$TCR.sd,
+    #                  quant0.025=tcr.result$TCR.quant0.025,
+    #                  quant0.5=tcr.result$TCR.quant0.5,
+    #                  quant0.975=tcr.result$TCR.quant0.975,
+    #                  #creds=tcr.result$creds,
+    #                  samples=list(
+    #                    TCR=tcr.result$samples$TCR, H=tcr.result$samples$H,
+    #                    sigmaf=tcr.result$samples$sigmaf,F0=tcr.result$samples$F0))
+    # ret$time$TCR = tcr.result$time
+  ret$TCR = tcr.result
     # ret$misc$TCR.options$nsamples = object$climate.misc$tcr.options$nsamples
     # ret$misc$TCR.options$seed = object$climate.misc$tcr.options$seed
     
@@ -144,24 +145,25 @@ process.mu = function(object, mu.result, misc=NULL){
     stop("Invalid 'object' class.")
   }
     
-    
-    ret$mu = list(mean=mu.result$mu.mean, sd=mu.result$mu.sd)
-    
-    if(ret$misc$mu.options$compute.mu %in% c(2,"full","complete")){
-      compute.mu = 2 ###
-      ret$mu$quant0.025=mu.result$mu.quant0.025
-      ret$mu$quant0.5=mu.result$mu.quant0.5
-      ret$mu$quant0.975=mu.result$mu.quant0.975
-      ret$mu$samples=list(
-        mu=mu.result$samples$mu, H=mu.result$samples$H,
-        sigmaf=mu.result$samples$sigmaf, F0=mu.result$samples$F0
-      )
-    }else{
-      compute.mu = 1 ###
-    }
-    
-    
-    ret$time$mu = mu.result$time
+  ret$mu = mu.result
+    # 
+    # ret$mu = list(mean=mu.result$mean, sd=mu.result$sd)
+    # 
+    # if(ret$misc$mu.options$compute.mu %in% c(2,"full","complete")){
+    #   compute.mu = 2 ###
+    #   ret$mu$quant0.025=mu.result$mu.quant0.025
+    #   ret$mu$quant0.5=mu.result$mu.quant0.5
+    #   ret$mu$quant0.975=mu.result$mu.quant0.975
+    #   ret$mu$samples=list(
+    #     mu=mu.result$samples$mu, H=mu.result$samples$H,
+    #     sigmaf=mu.result$samples$sigmaf, F0=mu.result$samples$F0
+    #   )
+    # }else{
+    #   compute.mu = 1 ###
+    # }
+    # 
+    # 
+    # ret$time$mu = mu.result$time
     #ret$misc$mu.options$compute.mu = ret$climate.misc$compute.mu
     #ret$misc$mu.options$nsamples=ret$climate.misc$mu.options$nsamples
     #ret$misc$mu.options$seed = ret$climate.misc$mu.options$seed

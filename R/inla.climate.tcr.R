@@ -70,13 +70,14 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
              quant0.5=INLA::inla.qmarginal(0.5,mcfit),
              quant0.975=INLA::inla.qmarginal(0.975,mcfit),
              samples=list(
-               TCR=hyperpars[,4],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]),
-             time=tid.mc)
+               TCR=hyperpars[,4],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]))
   
   if(class(result) == "inla.climate"){
     climate.res$TCR = ret
+    climate.res$time$TCR = tid.mc
     return(climate.res)
   }else{
+    ret$time = tid.mc
     return(ret)
   }
 }

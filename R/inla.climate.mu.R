@@ -102,12 +102,13 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
     ret$quant0.975=mu.quant0.975+T0.corr
     ret$samples=list(mu=mu.samples+T0.corr, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
   }
-  ret$time = tid.mc
   
   if(class(result) == "inla.climate"){
     climate.res$mu = ret
+    climate.res$time$mu = tid.mc
     return(ret)
   }else{
+    ret$time = tid.mc
     return(ret)
   }
   

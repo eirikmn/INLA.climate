@@ -94,16 +94,21 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
     cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
-  ret = list(mu.mean=mu.mean+T0.corr, mu.sd = mu.sd)
+  ret = list(mean=mu.mean+T0.corr, sd = mu.sd)
 
   if(!quick){
-    ret$mu.quant0.025=mu.quant0.025+T0.corr
-    ret$mu.quant0.5=mu.quant0.5+T0.corr
-    ret$mu.quant0.975=mu.quant0.975+T0.corr
+    ret$quant0.025=mu.quant0.025+T0.corr
+    ret$quant0.5=mu.quant0.5+T0.corr
+    ret$quant0.975=mu.quant0.975+T0.corr
     ret$samples=list(mu=mu.samples+T0.corr, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
   }
   ret$time = tid.mc
   
-  return(ret)
-
+  if(class(result) == "inla.climate"){
+    climate.res$mu = ret
+    return(ret)
+  }else{
+    return(ret)
+  }
+  
 }

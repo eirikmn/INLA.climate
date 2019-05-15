@@ -65,13 +65,18 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
     cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
-  ret = list(TCR.mean=mean(hyperpars[,4]),TCR.sd = sd(hyperpars[,4]),
-             TCR.quant0.025=INLA::inla.qmarginal(0.025,mcfit),
-             TCR.quant0.5=INLA::inla.qmarginal(0.5,mcfit),
-             TCR.quant0.975=INLA::inla.qmarginal(0.975,mcfit),
+  ret = list(mean=mean(hyperpars[,4]),sd = sd(hyperpars[,4]),
+             quant0.025=INLA::inla.qmarginal(0.025,mcfit),
+             quant0.5=INLA::inla.qmarginal(0.5,mcfit),
+             quant0.975=INLA::inla.qmarginal(0.975,mcfit),
              samples=list(
                TCR=hyperpars[,4],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]),
              time=tid.mc)
   
-  return(ret)
+  if(class(result) == "inla.climate"){
+    climate.res$TCR = ret
+    return(climate.res)
+  }else{
+    return(ret)
+  }
 }

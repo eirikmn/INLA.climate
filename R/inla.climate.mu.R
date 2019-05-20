@@ -104,10 +104,14 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
   }
   
   if(class(result) == "inla.climate"){
-    climate.res$mu = ret
-    climate.res$time$mu = tid.mc
-    return(ret)
+    if(print.progress){
+      print("Exporting inla.climate object")
+    }
+    result$mu = ret
+    result$time$mu = tid.mc
+    return(result)
   }else{
+    print("Exporting list object")
     ret$time = tid.mc
     return(ret)
   }

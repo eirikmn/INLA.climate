@@ -73,10 +73,14 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
                TCR=hyperpars[,4],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]))
   
   if(class(result) == "inla.climate"){
+    if(print.progress){
+      print("Exporting inla.climate object")
+    }
     climate.res$TCR = ret
     climate.res$time$TCR = tid.mc
     return(climate.res)
   }else{
+    print("Exporting inla object")
     ret$time = tid.mc
     return(ret)
   }

@@ -48,7 +48,7 @@ summary.inla.climate = function(object,digits=4L,...){
     tcr=as.data.frame(tcr)
     colnames(tcr)=c("mean","sd","0.025quant","0.5quant","0.975quant")
     rownames(tcr)="TCR"
-    ut=c(ut, list(TCR=tcr,tcr.nsamples=object$misc$TCR.options$nsamples))
+    ut=c(ut, list(TCR=tcr,tcr.nsamples=object$misc$TCR.options$nsamples,Qco2=object$misc$TCR.options$Qco2))
   }
   
   if(!is.null(object$mu)){
@@ -116,7 +116,7 @@ print.summary.inla.climate = function(x,digits=4L,...){
   }
   
   if(!is.null(x$TCR)){
-    cat("Transient climate response computed from ",format(x$tcr.nsamples,digits=digits,scientific=FALSE)," samples:\n",sep="")
+    cat("Transient climate response computed from ",format(x$tcr.nsamples,digits=digits,scientific=FALSE)," samples using CO2 coefficient ",format(x$Qco2,digits=digits,scientific=FALSE),":\n",sep="")
     print(format(x$TCR,digits=digits))
     cat("\n")
   }

@@ -79,9 +79,15 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
     result$TCR = ret
     result$time$TCR = tid.mc
     result$time$Total = result$time$Total + tid.mc
+    result$misc$TCR.options$nsamples = nsamples
+    result$misc$TCR.options$seed = seed
+    result$misc$TCR.options$Qco2 = Qco2
     return(result)
   }else{
-    print("Exporting list object")
+    if(print.progress){
+      print("Exporting list object")
+    }
+    
     ret$time = tid.mc
     return(ret)
   }

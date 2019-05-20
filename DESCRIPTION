@@ -1,7 +1,7 @@
 Package: INLA.climate
 Type: Package
 Title: Full Bayesian analysis of radiative forcing climate model
-Version: 0.2.4
+Version: 0.2.5
 Date: 2019-02-04
 Author:@R c(person("Eirik", "Myrvoll-Nilsen", email = "eirikmn91@gmail.com", role = c("cre", "aut")))
 Maintainer: Eirik Myrvoll-Nilsen <eirikmn91@gmail.com>

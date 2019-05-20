@@ -110,9 +110,14 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
     result$mu = ret
     result$time$mu = tid.mc
     result$time$Total = result$time$Total + tid.mc
+    result$misc$mu.options$nsamples = nsamples
+    result$misc$mu.options$seed = seed
+    result$misc$mu.options$Qco2 = compute.mu
     return(result)
   }else{
-    print("Exporting list object")
+    if(print.progress){
+      print("Exporting list object")
+    }
     ret$time = tid.mc
     return(ret)
   }

@@ -123,9 +123,9 @@ print.summary.inla.climate = function(x,digits=4L,...){
   
   if(!is.null(x$mu)){
     if(x$mu.full.Bayesian){
-      cat("Full Bayesian analysis of forcing response computed with ",format(x$mu.nsamples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
+      cat("Full Bayesian analysis of forcing response computed from ",format(x$mu.nsamples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
     }else{
-      cat("Quick computation of forcing response computed with ",format(x$mu.nsamples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
+      cat("Quick computation of forcing response computed from ",format(x$mu.nsamples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
     }
   }
   

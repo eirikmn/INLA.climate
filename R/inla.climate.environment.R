@@ -4,7 +4,7 @@ process.inla = function(object, misc=NULL){
   }else if(is.null(object$climate.misc) && is.null(misc)){
     stop("Could not find inla.climate information.")
   }
-  #misc: INLA.options, call, data, forcing, m, stoc, t0, stepLength, restart, time
+  #misc: INLA.options, call, data, forcing, m, model, t0, stepLength, restart, time
   a=3
   margs = object$marginals.hyperpar
   H.approx = INLA::inla.emarginal(function(x) 0.5+0.5/(1+exp(-x)),margs$`Theta2 for idy`)
@@ -86,7 +86,7 @@ process.inla = function(object, misc=NULL){
   results$misc$forcing = object$climate.misc$forcing
   results$misc$m = object$climate.misc$m
   
-  results$misc$stoc = object$climate.misc$stoc
+  results$misc$model = object$climate.misc$model
   results$misc$T0 = object$climate.misc$T0
   
   results$misc$initialtheta = object$climate.misc$inla.options$initialtheta

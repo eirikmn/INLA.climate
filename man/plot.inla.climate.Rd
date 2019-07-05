@@ -9,6 +9,7 @@
 }
 \usage{
 \method{plot}{inla.climate}(x,  plot.random=TRUE,
+                                plot.ar=TRUE,
                                 plot.hyperpars=TRUE,
                                 plot.tcr.samples=TRUE,
                                 plot.mu = TRUE,
@@ -23,7 +24,10 @@
      \code{inla.climate} object returned by \code{inla.climate} function. Also works if the TCR sampling procedure has been skipped.
 }
 \item{plot.random}{
-Boolean variable indicating if marginal posterior means and 95\% credible intervals for the latent GMRF corresponding to the AR(1) mixture.
+Boolean variable indicating if marginal posterior means and 95\% credible intervals for the latent GMRF corresponding to the AR(1) mixture should be plotted.
+}
+\item{plot.ar}{
+Boolean variable indicating if marginal posterior means and 95\% credible intervals for the underlying AR(1) components should be plotted.
 }
 \item{plot.hyperpars}{Boolean indicating if the marginal posterior distributions of the hyperparameters should be plotted.}
 \item{plot.tcr.samples}{

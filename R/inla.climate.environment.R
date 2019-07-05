@@ -66,7 +66,7 @@ process.inla = function(object, misc=NULL){
                  
                  #hpd.95=list(H=hpd.H,sigmaf=hpd.sf,sigmax=hpd.sx,hpd.F0=hpd.F0),
                  time=list(inla=object$climate.misc$time.inla))
-  for(comp in 1:object$misc$m){
+  for(comp in 1:object$climate.misc$m){
     results$latent.field[[paste0("AR.component.",comp)]] <- list(means=object$summary.random$idy$mean[1:n+n*(comp)],
                                                                  sd=object$summary.random$idy$sd[1:n+n*(comp)],
                                                                  quant0.025=object$summary.random$idy$`0.025quant`[1:n+n*(comp)],

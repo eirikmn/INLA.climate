@@ -1,6 +1,6 @@
 
 inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.01,restart.inla=FALSE,
-                        m = 4,stoc="fgn", print.progress=FALSE,
+                        m = 4,model="fgn", print.progress=FALSE,
                         inla.options = list(),
                         tcr.options = list(),
                         mu.options = list() ){
@@ -56,7 +56,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   
   lagmax = 1000L
 
-  funks = h.map.maker(m,lagmax,stoc)
+  funks = h.map.maker(m,lagmax,model)
 
   n=length(forcing)
   if(class(data)=="numeric" || class(data)=="ts"){
@@ -77,7 +77,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     inla.options$control.compute$dic = FALSE
   }
 
-  lprior.fun.H = compute.Hprior(50,0.9,0.1,persistent=T,stoc=stoc)
+  lprior.fun.H = compute.Hprior(50,0.9,0.1,persistent=T,model=model)
 
   model.approx = INLA::inla.rgeneric.define(rgeneric.forcing.fast,lprior.fun.H = lprior.fun.H,
                                       n=n,N=m,forcing=forcing,funks=funks)
@@ -124,7 +124,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   }
   
   misc = list(call=inla.climate.call, INLA.options=inla.options, TCR.options=tcr.options, mu.options=mu.options,
-              data = data.frame(y=(df$y+T0),idy=(df$idy)), forcing=forcing, n=n, m=m, stoc=stoc, T0=T0,
+              data = data.frame(y=(df$y+T0),idy=(df$idy)), forcing=forcing, n=n, m=m, model=model, T0=T0,
               stepLength=stepLength, restart.inla=restart.inla, Qco2=Qco2, compute.mu=compute.mu,
               time.inla = tid.approx)
   

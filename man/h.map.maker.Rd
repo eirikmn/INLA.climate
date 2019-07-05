@@ -8,7 +8,7 @@ Hurst exponent to weighted AR(1) sum mapping
 Creates a mapping between the Hurst exponent of a fractional Gaussian noise and the weights and lag-one parameters of the specified AR(1) mixture approximation. The mapping functions are drawn by splines based on precomputed values included in the package.
 }
 \usage{
-h.map.maker(m=4, lagmax=1000, stoc="fgn")
+h.map.maker(m=4, lagmax=1000, model="fgn")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,7 +18,7 @@ The number of AR(1) processes used in the approximate model.
 \item{lagmax}{
 The number of lags of which the approximate autocorrelation functions are supposed to match the theoretical fGn one.
 }
-\item{stoc}{
+\item{model}{
 The long memory process for which \code{H} is a parameter of. Currently, only fractional Gaussian noise (\code{model="fgn"}) and ARFIMA(0,d,0) (\code{model="arfima"},d=H-0.5) are supported.
 }
 }

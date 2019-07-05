@@ -1,7 +1,7 @@
-h.map.maker = function(m=4,lagmax=1000,stoc="fgn"){
+h.map.maker = function(m=4,lagmax=1000,model="fgn"){
   
-  if(!(stoc %in% c("fgn","arfima"))){
-    stop(paste0("'",stoc,"' is not supported."))
+  if(!(model %in% c("fgn","arfima"))){
+    stop(paste0("'",model,"' is not supported."))
   }
   
 #  load(file=system.file("inst/Hmapping/",package="INLA.climate"))
@@ -25,7 +25,7 @@ h.map.maker = function(m=4,lagmax=1000,stoc="fgn"){
   }
     
   
-  filename = paste(stoc,"Lag",lagmax,"m",m,".txt",sep="") 
+  filename = paste(model,"Lag",lagmax,"m",m,".txt",sep="") 
   
   if(!( filename %in% list.files(path=folder.path))){
     stop("Model specifications are not supported.")

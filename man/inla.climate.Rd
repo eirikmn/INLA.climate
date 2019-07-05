@@ -8,7 +8,7 @@ An INLA climate forcing model for global mean surface temperature
 Fits forcing data to a given temperature dataset using INLA. The undocumented forcing variables not included in \code{forcing} are collectively assumed a stochastic fGn process. Also uses Monte Carlo simulations to obtain Bayesian inference about the transient climate response.
 }
 \usage{
-inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, restart.inla = FALSE, m = 4, stoc = "fgn", print.progress = FALSE,
+inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, restart.inla = FALSE, m = 4, model = "fgn", print.progress = FALSE,
    inla.options = list(),
    tcr.options = list(),
    mu.options = list())
@@ -34,10 +34,10 @@ inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, rest
     Boolean variable indicating whether INLA should restart at the solution found from the first convergence of the Newton-Rhapson algorithm. This can sometimes improve convergence.
   }
   \item{m}{
-     m The number of AR(1) processes used in the fGn approximation. I recommend having at least four (up to six, depending on \code{stoc} and \code{lagmax}). The model will perform slower, but more accurately if this is increased.
+     m The number of AR(1) processes used in the fGn approximation. I recommend having at least four (up to six, depending on \code{model} and \code{lagmax}). The model will perform slower, but more accurately if this is increased.
 }
-  \item{stoc}{
-    The long memory model used to describe stochastic forcing. Currently, only fractional Gaussian noise (\code{stoc="fgn"}) and ARFIMA(0,d,0) (\code{stoc="arfima"}) are supported.
+  \item{model}{
+    The long memory model used to describe stochastic forcing. Currently, only fractional Gaussian noise (\code{model="fgn"}) and ARFIMA(0,d,0) (\code{model="arfima"}) are supported.
   }
   \item{print.progress}{
     Prints progression if \code{TRUE}.
@@ -75,12 +75,12 @@ If \code{length(data)>length(forcing)} or \code{data} contains \code{NA} values 
 %% ...
 \item{\code{inla.result}}{An object of class "inla" returned by the \code{inla}-function. See \link[INLA]{inla} for more details.}
  \item{\code{hyperparam}}{A list containing the marginal posterior distribution, its mean, standard deviation and the 0.025, 0.5 and 0.975 quantiles of each hyperparameters.}
-  \item{\code{latent}}{Contains the marginal posterior mean, standard deviation and the 0.025, 0.5 and 0.975 quantiles of the latent Gaussian variables fitted to the data. Also includes predictions if there are any.}
+  \item{\code{latent.field}}{This list contains the marginal posterior mean, standard deviation and the 0.025, 0.5 and 0.975 quantiles of the latent Gaussian variables fitted to the data and the underlying AR(1) components. Also includes predictions if there are any.}
   \item{\code{time}}{Time spent for convergence. \code{time$fGn} gives the time spent fitting the temperature to an fGn, \code{time$TCR} gives the time spent doing the Monte Carlo sampling for the transient climate response and \code{time$total} gives total time elapsed time for the \code{inla.climate} function.}
   \item{\code{TCR}}{A list containing the mean, standard deviation and 0.025, 0.5 and 0.975 quantiles obtained from the transient climate response simulation procedure. \code{TCR$samples} gives a list of the Monte Carlo samples for the TCR and the hyperparameters.}
 
 \item{\code{misc}}{
-A list containing the call of the \code{inla.climate} function, as well as the input variables \code{data}, \code{forcing}, \code{C}, \code{m}, \code{stoc}, and the options set for the INLA procedure and, if they are computed, the TCR and forcing response sampling schemes. It also includes the value for the constant term $T_0$, defined by the mean of the 20 first values of \code{y}.
+A list containing the call of the \code{inla.climate} function, as well as the input variables \code{data}, \code{forcing}, \code{C}, \code{m}, \code{model}, and the options set for the INLA procedure and, if they are computed, the TCR and forcing response sampling schemes. It also includes the value for the constant term $T_0$, defined by the mean of the 20 first values of \code{y}.
 }
 \item{\code{log.mlikelihood}}{
 The log marginal-likelihood of the fit obtained by INLA.

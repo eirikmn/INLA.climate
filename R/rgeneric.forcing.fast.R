@@ -19,6 +19,7 @@ rgeneric.forcing.fast = function(
     if(!is.null(envir)){
       NN=get("N",envir)
       ffunks=get("funks",envir)
+      
     }
     params = numeric(2*NN)
     for(i in 1:(2*NN)){
@@ -54,39 +55,12 @@ rgeneric.forcing.fast = function(
     #n = 30
     means = numeric(nn)
 
-    #if(!is.loaded('Rc_mu')){
-      #print('hallo')
-    #  dyn.load(file.path(.Library,"INLA.climate/libs/Rc_mu.so"))
-      #dyn.load('./src/colmeansr.so')
-    #}
-    #means = mu.cwrapper(as.double(forcing),as.integer(n),as.double(H),as.double(sf),as.double(shift))
+   
     res = .C('Rc_mu',ans=as.matrix(means,ncol=1),as.double(fforcing),as.integer(nn),
              as.double(H),as.double(sf),as.double(shift), PACKAGE="INLA.climate")
 
 
     return(c(res$ans,rep(0,NN*nn)))
-  }
-
-  ar1maker = function(rho) {
-    if(!is.null(envir)){
-      nn=get("n",envir)
-    }
-    # tid.rgen.start = proc.time()[[3]]
-    tauu = 1 / (1 - rho ^ 2)
-    i = c(1L, nn, 2L:(nn - 1L), 1L:(nn - 1L))
-    j = c(1L, nn, 2L:(nn - 1L), 2L:nn)
-    xx = #tauu *
-      c(1/(1-rho^2), 1/(1-rho^2), rep((1 + rho ^ 2)/(1-rho^2), nn - 2L),
-        rep(-rho/(1-rho^2), nn - 1L))
-    Q = Matrix::sparseMatrix(
-      i = i,
-      j = j,
-      x = xx,
-      giveCsparse = FALSE,
-      symmetric = TRUE
-    )
-
-    return(Q)
   }
 
   graph = function()

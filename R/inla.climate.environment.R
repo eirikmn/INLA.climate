@@ -56,13 +56,24 @@ process.inla = function(object, misc=NULL){
                                    sigmaf=zmarg.sf$quant0.975,
                                    F0=zmarg.F0$quant0.975  ),
                    marginals=list(H=marg.H, sigmax=marg.sx,sigmaf=marg.sf,F0=marg.F0) ),
-                 model.fit=list(means=object$summary.random$idy$mean[1:n]+T0,
-                                sd = object$summary.random$idy$sd[1:n],
-                                quant0.025=object$summary.random$idy$`0.025quant`[1:n]+T0,
-                                quant0.5=object$summary.random$idy$`0.5quant`[1:n]+T0,
-                                quant0.975=object$summary.random$idy$`0.975quant`[1:n]+T0),
+                 latent.field=list(
+                   model.fit=list(means=object$summary.random$idy$mean[1:n]+T0,
+                                  sd = object$summary.random$idy$sd[1:n],
+                                  quant0.025=object$summary.random$idy$`0.025quant`[1:n]+T0,
+                                  quant0.5=object$summary.random$idy$`0.5quant`[1:n]+T0,
+                                  quant0.975=object$summary.random$idy$`0.975quant`[1:n]+T0)
+                 ),
+                 
                  #hpd.95=list(H=hpd.H,sigmaf=hpd.sf,sigmax=hpd.sx,hpd.F0=hpd.F0),
                  time=list(inla=object$climate.misc$time.inla))
+  for(comp in 1:m){
+    results$latent.field[[paste0("AR.component.",comp)]] <- list(means=object$summary.random$idy$mean[1:n+n*(comp)],
+                                                                 sd=object$summary.random$idy$sd[1:n+n*(comp)],
+                                                                 quant0.025=object$summary.random$idy$`0.025quant`[1:n+n*(comp)],
+                                                                 quant0.5=object$summary.random$idy$`0.5quant`[1:n+n*(comp)],
+                                                                 quant0.975=object$summary.random$idy$`0.975quant`[1:n+n*(comp)])
+  }
+  
   
   results$misc$INLA.options = object$climate.misc$INLA.options
   results$misc$TCR.options  = object$climate.misc$TCR.options

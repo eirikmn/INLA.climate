@@ -8,7 +8,7 @@
 Computes a penalise complexity prior function for the Hurst exponent in logarithmic scaling. Both fGn and ARFIMA(0,d,0) models are supported.
 }
 \usage{
-compute.Hprior(n, upper, alpha, persistent=TRUE, stoc="fgn")
+compute.Hprior(n, upper, alpha, persistent=TRUE, model="fgn")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,7 +24,7 @@ The value of the penalise complexity parameter \code{alpha}. This also denotes t
   \item{persistent}{
 A boolean variable. If \code{TRUE}, the PC-prior will be created for only the persistent range \code{0.5<H<1}.
 }
-  \item{stoc}{
+  \item{model}{
 Determines which model the Hurst exponent belongs to. Currently, only fractional Gaussian noise (\code{model="fgn"}) and ARFIMA(0,d,0) (\code{model="arfima"}, d=H-0.5) models are supported.
 }
 }
@@ -60,7 +60,7 @@ Sørbye, S., Rue, H. (2017)
 HH = seq(0.501,0.999,by=0.0001)
 l.HH = log((HH-0.5)/(1-HH))
 
-l.pcp.f = compute.Hprior(100,0.9,0.01,persistent=TRUE,stoc="fgn")
+l.pcp.f = compute.Hprior(100,0.9,0.01,persistent=TRUE,model="fgn")
 pcp = 0.5+0.5/(1+exp(-l.pcp.f(l.HH)))
 
 plot(x=HH,y=pcp,type="l",xlab="H",ylab="Density")

@@ -1,4 +1,4 @@
-compute.Hprior = function(n, upper,  alpha, persistent=TRUE, stoc="fgn") {
+compute.Hprior = function(n, upper,  alpha, persistent=TRUE, model="fgn") {
   #cat("\n\nCOMPUTE PRIOR!!!\n\n\n")
   b=0.999  
   if(persistent){
@@ -15,9 +15,9 @@ compute.Hprior = function(n, upper,  alpha, persistent=TRUE, stoc="fgn") {
   a.func.corr=rep(0,length(h))
   kk=1:(n-1)
   for (i in 1:length(h)){
-    if(stoc=="fgn"){
+    if(model=="fgn"){
       acf.vec=c( 1,0.5*( (kk+1)^(2*h[i])-2*kk^(2*h[i])+(kk-1)^(2*h[i]) ) )
-    }else if (stoc=="arfima"){
+    }else if (model=="arfima"){
       acorr = lgamma(1.5-h[i])+lgamma(kk+h[i]-0.5) - lgamma(h[i]-0.5)-lgamma(1.5-h[i]+kk) 
       acf.vec = c(1,exp(acorr))
     }else{

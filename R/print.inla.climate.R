@@ -35,7 +35,7 @@ print.inla.climate = function(x,digits=4L,...){
   }
   
   
-  cat("\nNoise model (",x$misc$model,") was approximated using ",x$misc$m," AR(1) processes.\n",sep="")
+  cat("\nNoise model '",x$misc$model,"' was approximated using ",x$misc$m," AR(1) processes.\n",sep="")
   if(!is.null(x$time$TCR)){
     cat("\nTCR estimate obtained by ",format(x$misc$TCR.options$nsamples,scientific=F,digits=digits),
         " Monte Carlo samples with CO2 coefficient ",x$misc$TCR.options$Qco2,".\n",sep="")

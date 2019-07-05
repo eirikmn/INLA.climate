@@ -80,27 +80,35 @@ plot.inla.climate = function(x,
   }
   if(plot.hyperpars){
     figure.count <- new.plot(postscript,pdf,prefix,figure.count,...) +1
-    par(mfrow=c(2,2),mar=(c(2.6,2.2,2.3,1.4)+0.1))
+    par(mfrow=c(2,2),mar=(c(3.8,2.6,0.8,1)))
     plot(x$hyperparam$marginals$H,xlab="",ylab="",
-         main=expression(paste("Posterior density [H]")),type="l")
+         main="",type="l")
     abline(v=x$hyperparam$means$H,lwd=0.8,col="black")
     abline(v=x$hyperparam$quant0.025$H,lwd=0.8,col="gray")
     abline(v=x$hyperparam$quant0.975$H,lwd=0.8,col="gray")
+    title(xlab=expression(paste("Posterior density (H)")),ylab="",line=2.5,cex.lab=1)
+    
     plot(x$hyperparam$marginals$sigmax,xlab="",ylab="",
-         main=expression(paste("Posterior density [",sigma[epsilon],"]")),type="l")
+         main="",type="l")
     abline(v=x$hyperparam$means$sigmax,lwd=0.8,col="black")
     abline(v=x$hyperparam$quant0.025$sigmax,lwd=0.8,col="gray")
     abline(v=x$hyperparam$quant0.975$sigmax,lwd=0.8,col="gray")
+    title(xlab=expression(paste("Posterior density (",sigma[epsilon],")")),ylab="",line=2.5,cex.lab=1)
+    
     plot(x$hyperparam$marginals$sigmaf,xlab="",ylab="",
-         main=expression(paste("Posterior density [",sigma[f],"]")),type="l")
+         main="",type="l")
     abline(v=x$hyperparam$means$sigmaf,lwd=0.8,col="black")
     abline(v=x$hyperparam$quant0.025$sigmaf,lwd=0.8,col="gray")
     abline(v=x$hyperparam$quant0.975$sigmaf,lwd=0.8,col="gray")
+    title(xlab=expression(paste("Posterior density (",sigma[f],")")),ylab="",line=2.5,cex.lab=1)
+    
     plot(x$hyperparam$marginals$F0,xlab="",ylab="",
-         main=expression(paste("Posterior density [",F[0],"]")),type="l")
+         main="",type="l")
     abline(v=x$hyperparam$means$F0,lwd=0.8,col="black")
     abline(v=x$hyperparam$quant0.025$F0,lwd=0.8,col="gray")
     abline(v=x$hyperparam$quant0.975$F0,lwd=0.8,col="gray")
+    title(xlab=expression(paste("Posterior density (",F[0],")")),ylab="",line=2.5,cex.lab=1)
+    
     par(mfrow=c(1,1),mar=(c(5,4,4,2)+0.1))
     if(postscript || pdf){
       if (names(dev.cur()) != "null device") {

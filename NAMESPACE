@@ -1,7 +1,7 @@
 useDynLib(INLA.climate, c_Q, Rc_Q, c_mu, Rc_mu)
 
 
-importFrom("graphics", "abline", "hist", "lines", "par", "plot")
+importFrom("graphics","title", "abline", "hist", "lines", "par", "plot")
   importFrom("stats", "density", "dexp", "dnorm", "runif", "sd",
              "splinefun", "toeplitz")
   importFrom("utils", "read.table")

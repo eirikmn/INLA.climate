@@ -43,6 +43,7 @@ plot.inla.climate = function(x,
   }
   if(plot.ar){
     figure.count <- new.plot(postscript,pdf,prefix,figure.count,...) +1
+    skip.this = FALSE
     if(x$misc$m==1){
       par(mfrow=c(1,1),mar=(c(5,4,4,2)+0.1))
     }else if(x$misc$m==2){
@@ -57,25 +58,28 @@ plot.inla.climate = function(x,
       par(mfrow=c(3,2),mar=(c(3.5,2.5,0.8,0.8)))
     }else{
       warning(paste0("The built-in plot function for AR(1) components is not compatible with m=",x$misc$m," and will be skipped."))
-      break
+      skip.this = TRUE
     }
-    rekke=numeric(0)
-    for(iter in 1:x$misc$m){
-      rekke=range(rekke,x$latent.field[[paste0("AR.component.",iter)]])
-    }
-    for(iter in 1:x$misc$m){
-      plot(x$latent.field[[paste0("AR.component.",iter)]]$quant0.5,lwd=1.5,type="l",ylim=rekke,
-           xlab="",ylab="", main="",cex.axis=0.8)
-      lines(x$latent.field[[paste0("AR.component.",iter)]]$quant0.025[1:n],lwd=0.7,lty=1,col="gray")
-      lines(x$latent.field[[paste0("AR.component.",iter)]]$quant0.975[1:n],lwd=0.7,lty=1,col="gray")
-      title(xlab=paste0("AR(1) component #",iter),ylab="",line=2.,cex.lab=0.8)
-    }
-    
-    if(postscript || pdf){
-      if (names(dev.cur()) != "null device") {
-        dev.off()
+    if(!skip.this){
+      rekke=numeric(0)
+      for(iter in 1:x$misc$m){
+        rekke=range(rekke,x$latent.field[[paste0("AR.component.",iter)]])
+      }
+      for(iter in 1:x$misc$m){
+        plot(x$latent.field[[paste0("AR.component.",iter)]]$quant0.5,lwd=1.5,type="l",ylim=rekke,
+             xlab="",ylab="", main="",cex.axis=0.8)
+        lines(x$latent.field[[paste0("AR.component.",iter)]]$quant0.025[1:n],lwd=0.7,lty=1,col="gray")
+        lines(x$latent.field[[paste0("AR.component.",iter)]]$quant0.975[1:n],lwd=0.7,lty=1,col="gray")
+        title(xlab=paste0("AR(1) component #",iter),ylab="",line=2.,cex.lab=0.8)
+      }
+      
+      if(postscript || pdf){
+        if (names(dev.cur()) != "null device") {
+          dev.off()
+        }
       }
     }
+    
     par(mfrow=c(1,1),mar=(c(5,4,4,2)+0.1))
   }
   if(plot.hyperpars){

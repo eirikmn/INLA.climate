@@ -12,7 +12,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   
   
   if(print.progress){
-    print("Initiating inla.climate..\n")
+    print("Initiating inla.climate..")
   }
   tid.start = proc.time()[[3]]
 
@@ -58,7 +58,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
 
   funks = h.map.maker(m,lagmax,model)
 
-  n=length(forcing)
+  n=length(data[,1])
   if(class(data)=="numeric" || class(data)=="ts"){
     if(length(data)>n){
       data=c(data,rep(NA,n-length(data)))
@@ -77,7 +77,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     inla.options$control.compute$dic = FALSE
   }
 
-  lprior.fun.H = compute.Hprior(50,0.9,0.1,persistent=T,model=model)
+  lprior.fun.H = compute.Hprior(50,0.9,0.1,persistent=TRUE,model=model)
 
   model.approx = INLA::inla.rgeneric.define(rgeneric.forcing.fast,lprior.fun.H = lprior.fun.H,
                                       n=n,N=m,forcing=forcing,funks=funks)

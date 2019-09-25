@@ -20,8 +20,8 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   if(sum(is.null(forcing))>0) stop("Forcing contains NA values")
 
   old.digits=getOption("digits")
-  if(old.digits < 6){
-    options(digits = 6)
+  if(old.digits < 7){
+    options(digits = 7)
   }
   
   
@@ -57,10 +57,17 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   lagmax = 1000L
 
   funks = h.map.maker(m,lagmax,model)
-
-  n=length(data[,1])
+  
   if(class(data)=="numeric" || class(data)=="ts"){
-    if(length(data)>n){
+    n = length(data)
+  }else if (class(data)=="data.frame"){
+    n=length(data[,1])
+  }else{
+    stop("'data' input not recognized. Only objects of class 'numeric', 'ts' and 'data.frame' are valid.")
+  }
+  
+  if(class(forcing)=="numeric" || class(forcing)=="ts"){
+    if(length(forcing)>n){
       data=c(data,rep(NA,n-length(data)))
     }
     T0 = mean(data[1:20][!is.na(data[1:20])])
@@ -70,7 +77,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     y=data-T0
     df=data.frame(y=y,idy=1:n)
   }else{
-    stop("'data' must be a 'numeric' object.")
+    stop("'forcing' must be a 'numeric' object.")
   }
 
   if(sum(is.na(df[1:n,1]))>0){

@@ -60,21 +60,27 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   
   if(class(data)=="numeric" || class(data)=="ts"){
     n = length(data)
+    y0 = data
   }else if (class(data)=="data.frame"){
-    n=length(data[,1])
+    n = length(data[,1])
+    
+    y0 = data[,1]
+    
   }else{
     stop("'data' input not recognized. Only objects of class 'numeric', 'ts' and 'data.frame' are valid.")
   }
   
   if(class(forcing)=="numeric" || class(forcing)=="ts"){
     if(length(forcing)>n){
-      data=c(data,rep(NA,n-length(data)))
+      y0 = c(y0,rep(NA,length(forcing)-n))
+      n = length(forcing)
+      
     }
     T0 = mean(data[1:20][!is.na(data[1:20])])
     if(is.null(T0)){
       stop("There are no non-NA values among the first 20 of data, please remove these before repeating.")
     }
-    y=data-T0
+    y=y0-T0
     df=data.frame(y=y,idy=1:n)
   }else{
     stop("'forcing' must be a 'numeric' object.")

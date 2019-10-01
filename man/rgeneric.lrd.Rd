@@ -1,14 +1,14 @@
-\name{rgeneric.forcing.fast}
-\alias{rgeneric.forcing.fast}
+\name{rgeneric.lrd}
+\alias{rgeneric.lrd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-rgeneric model for fractional Gaussian noise forcing model for INLA.
+rgeneric model for long-range dependent forcing model for INLA.
 }
 \description{
 A script to allow fractional Gaussian noise adapted to the climate forcing model to be passed into the \code{R-INLA} framework.
 }
 \usage{
-rgeneric.forcing.fast(cmd = c("graph", "Q", "mu", "initial", "log.norm.const", "log.prior", "quit"), theta = NULL)
+rgeneric.lrd(cmd = c("graph", "Q", "mu", "initial", "log.norm.const", "log.prior", "quit"), theta = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -47,7 +47,7 @@ Eirik Myrvoll-Nilsen <\email{eirikmn91@gmail.com}>
   Hprior <- compute.Hprior(n, 0.9, 0.1)
   funks <- h.map.maker(m=m)
   
-  model.approx <- inla.rgeneric.define(rgeneric.forcing.fast,lprior.fun.H = Hprior,
+  model.approx <- inla.rgeneric.define(rgeneric.lrd,lprior.fun.H = Hprior,
                                         n=n,N=m,forcing=GISS_E2_R$Forcing,funks=funks)
                                         
   formula = y ~ -1+ f(idy, model=model.approx)

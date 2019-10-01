@@ -50,7 +50,7 @@ print.inla.climate = function(x,digits=4L,...){
   }
   
   cat("\nLikelihood model: ",x$inla.result$.args$family,"\n",sep="")
-  if(x$inla.result$.args$control.family$hyper$prec$fixed){
+  if(is.null(x$inla.result$.args$control.family$hyper$prec$fixed)){
     cat("log precision in the likelihood is fixed\n",sep="")
   }else{
     cat("log precision in the likelihood is random\n",sep="")

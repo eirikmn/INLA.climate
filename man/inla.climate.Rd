@@ -11,7 +11,8 @@ Fits forcing data to a given temperature dataset using INLA. The undocumented fo
 inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, restart.inla = FALSE, m = 4, model = "fgn", print.progress = FALSE,
    inla.options = list(),
    tcr.options = list(),
-   mu.options = list())
+   mu.options = list(),
+   ar1.options = list())
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -37,7 +38,7 @@ inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, rest
      m The number of AR(1) processes used in the fGn approximation. I recommend having at least four (up to six, depending on \code{model} and \code{lagmax}). The model will perform slower, but more accurately if this is increased.
 }
   \item{model}{
-    The long memory model used to describe stochastic forcing. Currently, only fractional Gaussian noise (\code{model="fgn"}) and ARFIMA(0,d,0) (\code{model="arfima"}) are supported.
+    The model used to describe stochastic forcing. For long memory responses the fractional Gaussian noise (\code{model="fgn"}) and ARFIMA(0,d,0) (\code{model="arfima"}) are supported. The first-order autoregressive model (\code{model="ar1"}) is also supported.
   }
   \item{print.progress}{
     Prints progression if \code{TRUE}.
@@ -54,13 +55,18 @@ inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, rest
   }
   \item{tcr.options}{
   A list of options for the transient climate response sampling procedure. The following options can be set:
-  \code{mcsamples} denotes the number of Monte Carlo simulations used to estimate the TCR. Default value is 100000.
+  \code{nsamples} denotes the number of Monte Carlo simulations used to estimate the TCR. Default value is 100000.
   \code{seed} is used as initial input for the random number generator. Default value is 1234.
   }
   \item{mu.options}{
   A list of options for the forcing response sampling procedure. The following options can be set:
   \code{full.Bayesian} is a boolean variable that indicates if full Bayesian inference is to be computed. If \code{TRUE}, all samples for each point in time is stored. This will increase runtime and memory consumption considerably. If \code{FALSE}, only the posterior mean and standard deviation for each point is computed. Default value is \code{FALSE}.
-  \code{mcsamples} denotes the number of Monte Carlo simulations used to estimate the forcing response. Default value is 100000.
+  \code{nsamples} denotes the number of Monte Carlo simulations used to estimate the forcing response. Default value is 100000.
+  \code{seed} is used as initial input for the random number generator. Default value is 1234.
+  }
+  \item{ar1.options}{
+  A list of options for the AR(1) weights and parameter evaluation. The following options can be set:
+  \code{nsamples} denotes the number of Monte Carlo simulations used to estimate the forcing response. Default value is 100000.
   \code{seed} is used as initial input for the random number generator. Default value is 1234.
   }
 }

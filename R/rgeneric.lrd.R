@@ -3,7 +3,7 @@
 #################################################################
 
 #n_i = b*w_i
-rgeneric.forcing.fast = function(
+rgeneric.lrd = function(
   cmd = c("graph", "Q","mu", "initial", "log.norm.const", "log.prior", "quit"),
   theta = NULL)
 {

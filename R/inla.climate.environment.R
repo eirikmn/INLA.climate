@@ -5,67 +5,116 @@ process.inla = function(object, misc=NULL){
     stop("Could not find inla.climate information.")
   }
   #misc: INLA.options, call, data, forcing, m, model, t0, stepLength, restart, time
-  a=3
+  if(misc$model == "fgn"){
+    var.name = "H"
+    var.func = function(x)0.5+0.5/(1+exp(-x))
+  }else if(misc$model == "arfima"){
+    var.name = "d"
+    var.func = function(x)0.5/(1+exp(-x))
+  }else if(misc$model == "ar1"){
+    var.name = "rho"
+    var.func = function(x)2/(1+exp(-x))-1
+  }
+  
+  
   margs = object$marginals.hyperpar
-  H.approx = INLA::inla.emarginal(function(x) 0.5+0.5/(1+exp(-x)),margs$`Theta2 for idy`)
-  sigmax.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta1 for idy`)
-  sigmaf.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta3 for idy`)
-  F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta4 for idy`)
-  
-  
-  run.creds = TRUE
-  if(run.creds){
+  a=3
+  if(misc$model != "ar1"){
+    
+    mem.approx = INLA::inla.emarginal(var.func,margs$`Theta2 for idy`)
+    sigmax.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta1 for idy`)
+    sigmaf.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta3 for idy`)
+    F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta4 for idy`)
+    
     margs.approx = object$marginals.hyperpar
-    marg.H = INLA::inla.tmarginal(function(x) 0.5+0.5/(1+exp(-x)),margs.approx$`Theta2 for idy`)
+    marg.mem = INLA::inla.tmarginal(var.func,margs.approx$`Theta2 for idy`)
     marg.sx = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta1 for idy`)
     marg.sf = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta3 for idy`)
     marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta4 for idy`)
     
-    zmarg.H = INLA::inla.zmarginal(marg.H,silent=T)
-    zmarg.sx = INLA::inla.zmarginal(marg.sx,silent=T)
-    zmarg.sf = INLA::inla.zmarginal(marg.sf,silent=T)
-    zmarg.F0 = INLA::inla.zmarginal(marg.F0,silent=T)
+    zmarg.mem = INLA::inla.zmarginal(marg.mem,silent=TRUE)
+    hpd.mem = INLA::inla.hpdmarginal(0.95,marg.mem)
+  }else{
+    sigmax.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta1 for idy`)
+    sigmaf.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta2 for idy`)
+    F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta3 for idy`)
     
-    hpd.H = INLA::inla.hpdmarginal(0.95,marg.H)
+    margs.approx = object$marginals.hyperpar
+    marg.sx = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta1 for idy`)
+    marg.sf = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta2 for idy`)
+    marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta3 for idy`)
+  }
+  
+  
+  
+    zmarg.sx = INLA::inla.zmarginal(marg.sx,silent=TRUE)
+    zmarg.sf = INLA::inla.zmarginal(marg.sf,silent=TRUE)
+    zmarg.F0 = INLA::inla.zmarginal(marg.F0,silent=TRUE)
+    
+
+    
     hpd.sx = INLA::inla.hpdmarginal(0.95,marg.sx)
     hpd.sf = INLA::inla.hpdmarginal(0.95,marg.sf)
     hpd.F0 = INLA::inla.hpdmarginal(0.95,marg.F0)
     
     #cat("Creds: ","(",hpd.H[1],",",hpd.H[2],") & (",hpd.sx[1],",",hpd.sx[2],") & (",
     #    hpd.sf[1],",",hpd.sf[2],") & (",hpd.F0[1],",",hpd.F0[2],") ",sep="")
-  }
   n=object$climate.misc$n
   T0 = object$climate.misc$T0
-  results = list(inla.result=object,
-                 hyperparam=list(
-                   means=list(H=H.approx,sigmax=sigmax.approx,sigmaf=sigmaf.approx,F0=F0.approx),
-                   sd = list(H=zmarg.H$sd,
-                             sigmax=zmarg.sx$sd,
-                             sigmaf=zmarg.sf$sd,
-                             F0=zmarg.F0$sd  ),
-                   quant0.025=list(H=zmarg.H$quant0.025,
-                                   sigmax=zmarg.sx$quant0.025,
-                                   sigmaf=zmarg.sf$quant0.025,
-                                   F0=zmarg.F0$quant0.025  ),
-                   quant0.5=list(H=zmarg.H$quant0.5,
-                                 sigmax=zmarg.sx$quant0.5,
-                                 sigmaf=zmarg.sf$quant0.5,
-                                 F0=zmarg.F0$quant0.5  ),
-                   quant0.975=list(H=zmarg.H$quant0.975,
-                                   sigmax=zmarg.sx$quant0.975,
-                                   sigmaf=zmarg.sf$quant0.975,
-                                   F0=zmarg.F0$quant0.975  ),
-                   marginals=list(H=marg.H, sigmax=marg.sx,sigmaf=marg.sf,F0=marg.F0) ),
-                 latent.field=list(
-                   model.fit=list(means=object$summary.random$idy$mean[1:n]+T0,
-                                  sd = object$summary.random$idy$sd[1:n],
-                                  quant0.025=object$summary.random$idy$`0.025quant`[1:n]+T0,
-                                  quant0.5=object$summary.random$idy$`0.5quant`[1:n]+T0,
-                                  quant0.975=object$summary.random$idy$`0.975quant`[1:n]+T0)
-                 ),
-                 
-                 #hpd.95=list(H=hpd.H,sigmaf=hpd.sf,sigmax=hpd.sx,hpd.F0=hpd.F0),
-                 time=list(inla=object$climate.misc$time.inla))
+  results = list(inla.result=object, hyperparam = list(
+      means=list(),
+      sd = list(),
+      quant0.025=list(),
+      quant0.5=list(),
+      quant0.975=list(),
+      marginals=list()  ),
+    latent.field = list(model.fit=list(means=object$summary.random$idy$mean[1:n]+T0,
+                   sd = object$summary.random$idy$sd[1:n],
+                   quant0.025=object$summary.random$idy$`0.025quant`[1:n]+T0,
+                   quant0.5=object$summary.random$idy$`0.5quant`[1:n]+T0,
+                   quant0.975=object$summary.random$idy$`0.975quant`[1:n]+T0) ),
+    time=list(inla=object$climate.misc$time.inla) )
+
+  if(misc$model != "ar1"){
+    results$hyperparam$means[[var.name]] = mem.approx
+    results$hyperparam$sd[[var.name]] = zmarg.mem$sd
+    results$hyperparam$quant0.025[[var.name]] = zmarg.mem$quant0.025
+    results$hyperparam$quant0.5[[var.name]] = zmarg.mem$quant0.5
+    results$hyperparam$quant0.975[[var.name]] = zmarg.mem$quant0.975
+    results$hyperparam$marginals[[var.name]] = marg.mem
+  }
+
+results$hyperparam$means[["sigmax"]] = sigmax.approx
+results$hyperparam$means[["sigmaf"]] = sigmaf.approx
+results$hyperparam$means[["F0"]] = F0.approx
+
+
+results$hyperparam$sd[["sigmax"]] = zmarg.sx$sd
+results$hyperparam$sd[["sigmaf"]] = zmarg.sf$sd
+results$hyperparam$sd[["F0"]] = zmarg.F0$sd
+
+
+results$hyperparam$quant0.025[["sigmax"]] = zmarg.sx$quant0.025
+results$hyperparam$quant0.025[["sigmaf"]] = zmarg.sf$quant0.025
+results$hyperparam$quant0.025[["F0"]] = zmarg.F0$quant0.025
+
+
+results$hyperparam$quant0.5[["sigmax"]] = zmarg.sx$quant0.5
+results$hyperparam$quant0.5[["sigmaf"]] = zmarg.sf$quant0.5
+results$hyperparam$quant0.5[["F0"]] = zmarg.F0$quant0.5
+
+
+results$hyperparam$quant0.975[["sigmax"]] = zmarg.sx$quant0.975
+results$hyperparam$quant0.975[["sigmaf"]] = zmarg.sf$quant0.975
+results$hyperparam$quant0.975[["F0"]] = zmarg.F0$quant0.975
+
+
+results$hyperparam$marginals[["sigmax"]] = marg.sx
+results$hyperparam$marginals[["sigmaf"]] = marg.sf
+results$hyperparam$marginals[["F0"]] = marg.F0
+
+
+if(misc$model %in% c("arfima","fgn","ar1")){ 
   for(comp in 1:object$climate.misc$m){
     results$latent.field[[paste0("AR.component.",comp)]] <- list(means=object$summary.random$idy$mean[1:n+n*(comp)],
                                                                  sd=object$summary.random$idy$sd[1:n+n*(comp)],
@@ -73,7 +122,7 @@ process.inla = function(object, misc=NULL){
                                                                  quant0.5=object$summary.random$idy$`0.5quant`[1:n+n*(comp)],
                                                                  quant0.975=object$summary.random$idy$`0.975quant`[1:n+n*(comp)])
   }
-  
+}  
   
   results$misc$INLA.options = object$climate.misc$INLA.options
   results$misc$TCR.options  = object$climate.misc$TCR.options
@@ -136,6 +185,55 @@ process.tcr = function(object, tcr.result, misc=NULL){
     # ret$misc$TCR.options$nsamples = object$climate.misc$tcr.options$nsamples
     # ret$misc$TCR.options$seed = object$climate.misc$tcr.options$seed
     
+  return(ret)
+}
+
+
+process.ar1 = function(object, ar1.result, misc=NULL){
+  #misc 
+  
+  if(class(object)=="inla"){
+    if(is.null(object$climate.misc) && !is.null(misc)){
+      object$climate.misc = misc
+    }else if(is.null(object$climate.misc) && is.null(misc)){
+      stop("Could not find inla.climate information.")
+    }
+    
+    ret = process.inla(object,misc)
+  }else if(class(object) == "inla.climate"){
+    ret = object
+  }else{
+    stop("Invalid 'object' class.")
+  }
+  if(object$misc$m==1){
+    marg = inla.tmarginal(1/(1+exp(-x)),object$inla.result$marginals.hyperpar$`Theta4 for idy`)
+    zmarg = inla.zmarginal(marg,silent=TRUE)
+    ret$hyperparam$means$p = zmarg$mean
+    ret$hyperparam$sd$p = zmarg$sd
+    ret$hyperparam$quant0.025$p = zmarg$quant0.025
+    ret$hyperparam$quant0.5$p = zmarg$quant0.5
+    ret$hyperparam$quant0.975$p = zmarg$quant0.975
+    ret$hyperparam$marginals$p = marg
+  }else{
+    for(k in 1:object$misc$m){
+      ret$hyperparam$means[[paste0("w",k)]] = ar1.result[[paste0("w",k)]]$mean
+      ret$hyperparam$sd[[paste0("w",k)]] = ar1.result[[paste0("w",k)]]$sd
+      ret$hyperparam$quant0.025[[paste0("w",k)]] = ar1.result[[paste0("w",k)]]$quant0.025
+      ret$hyperparam$quant0.5[[paste0("w",k)]] = ar1.result[[paste0("w",k)]]$quant0.5
+      ret$hyperparam$quant0.975[[paste0("w",k)]] = ar1.result[[paste0("w",k)]]$quant0.975
+      ret$hyperparam$marginals[[paste0("w",k)]] = cbind(density(ar1.result[[paste0("w",k)]]$samples)$x,density(ar1.result[[paste0("w",k)]]$samples)$y)
+    }
+    for(k in 1:object$misc$m){
+      ret$hyperparam$means[[paste0("p",k)]] = ar1.result[[paste0("p",k)]]$mean
+      ret$hyperparam$sd[[paste0("p",k)]] = ar1.result[[paste0("p",k)]]$sd
+      ret$hyperparam$quant0.025[[paste0("p",k)]] = ar1.result[[paste0("p",k)]]$quant0.025
+      ret$hyperparam$quant0.5[[paste0("p",k)]] = ar1.result[[paste0("p",k)]]$quant0.5
+      ret$hyperparam$quant0.975[[paste0("p",k)]] = ar1.result[[paste0("p",k)]]$quant0.975
+      ret$hyperparam$marginals[[paste0("p",k)]] = cbind(density(ar1.result[[paste0("p",k)]]$samples)$x,density(ar1.result[[paste0("p",k)]]$samples)$y)
+    }
+  }
+  
+  
   return(ret)
 }
 

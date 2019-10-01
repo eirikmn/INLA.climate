@@ -1,4 +1,4 @@
-inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,seed=1234,print.progress=FALSE){
+inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,seed=1234,print.progress=FALSE,model="fgn"){
 
   catch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
@@ -21,6 +21,7 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
   }
   
   
+  
   if(print.progress){
     cat("Starting Monte Carlo sampling with n=",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
@@ -32,12 +33,39 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
 
   #x = inla.posterior.sample(nsamples,r,seed=inla.seed) #int.strategy=grid
   x = INLA::inla.hyperpar.sample(nsamples,climate.res)
-  hyperpars = matrix(NA,nrow=nsamples,ncol=4) #c(H,sf,F0,TCR)
+  if(dim(x)[2]>4){
+    model = "ar1"
+  }
+  if(model %in% c("fgn","arfima")){
+    hyperpars = matrix(NA,nrow=nsamples,ncol=4) #c(H,sf,F0,TCR)
+    hyperpars[,1] = 0.5+0.5/(1+exp(-x[,2]))
+    hyperpars[,2] = 1/sqrt(exp(x[,3]))
+    a=3
+    hyperpars[,3] = -a+2*a/(1+exp(-x[,4]))
+  }else{
+    hyperpars = matrix(NA,nrow=nsamples,ncol=(2)) #c(H,sf,F0,w1,...,wm,L1,...,Lm)
+    hyperpars[,1] = 1/sqrt(exp(x[,2]))
+    a=3
+    hyperpars[,2] = -a+2*a/(1+exp(-x[,3]))
+    m = (dim(x)[2]-2)/2
+    ar1.temp= inla.climate.ar1(result,m=m,nsamples=nsamples,seed=seed,print.progress=print.progress)
+    ww = matrix(NA,nrow=nsamples,ncol=m)
+    LL = matrix(NA,nrow=nsamples,ncol=m)
+    if(m == 1){
+      ww = rep(1,nsamples)
+      LL = ar1.temp$ar1$p$samples-1
+    }else{
+      for(k in 1:m){
+        ww[,k] = ar1.temp$ar1[[paste0("w",k)]]$samples
+        LL[,k] = ar1.temp$ar1[[paste0("p",k)]]$samples-1
+      }
+    }
+    
+  }
+  
 
 
-  hyperpars[,1] = 0.5+0.5/(1+exp(-x[,2]))
-  hyperpars[,2] = 1/sqrt(exp(x[,3]))
-  hyperpars[,3] = x[,4]
+  
 
    tid.start = proc.time()[[3]]
   #if(!is.loaded('Rc_mu')){
@@ -54,17 +82,28 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
   xsumvec = numeric(n)
   x2sumvec =numeric(n)
   for(iter in 1:nsamples){
-
-    res = .C('Rc_mu',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),
-             as.double(hyperpars[iter,1]),as.double(hyperpars[iter,2]),as.double(hyperpars[iter,3]))
+    if(model %in% c("fgn","arfima")){
+      
+      res = .C('Rc_mu',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),
+               as.double(hyperpars[iter,1]),as.double(hyperpars[iter,2]),as.double(hyperpars[iter,3]))
+      
+    }else if(model == "ar1"){
+      
+      if(!is.loaded('Rc_mu_ar1')){
+        #dyn.load(file.path(.Library,"INLA.climate/libs/Rc_Q.so"))
+        dyn.load(file.path("Rc_mu_ar1.so"))
+      }
+      res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),as.integer(m),
+               as.double(ww[iter,]),as.double(LL[iter,]),as.double(hyperpars[iter,1]),
+               as.double(hyperpars[iter,2]))
+    }
+    
 
     if(!quick){
       mu.samples[iter,]=res$mumeans
     }
-
     xsumvec = xsumvec + res$mumeans
     x2sumvec = x2sumvec + res$mumeans^2
-
 
   }
 
@@ -100,7 +139,23 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
     ret$quant0.025=mu.quant0.025+T0.corr
     ret$quant0.5=mu.quant0.5+T0.corr
     ret$quant0.975=mu.quant0.975+T0.corr
-    ret$samples=list(mu=mu.samples+T0.corr, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
+    if(model %in% c("fgn","arfima")){
+      ret$samples=list(mu=mu.samples+T0.corr, H=hyperpars[,1],sigmaf=hyperpars[,2],F0=hyperpars[,3])
+    }else if(model == "ar1"){
+      ret$samples=list(mu=mu.samples+T0.corr, sigmaf=hyperpars[,1],F0=hyperpars[,2])
+      if(m==1){
+        ret$samples$p = LL+1
+      }else{
+        for(k in 1:m){
+          ret$samples[[paste0("w",k)]] = ww[,k]
+        }
+        for(k in 1:m){
+          ret$samples[[paste0("p",k)]] = LL[,k]+1
+        }
+      }
+      
+    }
+    
   }
   
   if(class(result) == "inla.climate"){

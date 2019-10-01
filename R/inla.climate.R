@@ -3,7 +3,8 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
                         m = 4,model="fgn", print.progress=FALSE,
                         inla.options = list(),
                         tcr.options = list(),
-                        mu.options = list() ){
+                        mu.options = list(),
+                        ar1.options = list()){
 
   catch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
@@ -27,7 +28,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   
   default.inla.options = list(
     num.threads=1,
-    control.compute = list(cpo=FALSE,dic=(sum(is.na(data))>0),config=TRUE),
+    control.compute = list(cpo=FALSE,dic=(sum(is.na(data))==0),config=TRUE),
     control.inla = list(reordering="metis",h=stepLength[1],restart=restart.inla),
     control.family = list(hyper = list(prec = list(initial = 12, fixed=TRUE))) )
   
@@ -52,11 +53,14 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     
   }
   
-  
-  
-  lagmax = 1000L
+  if(model == "ar1"){
+    default.ar1.options = list(nsamples = 100000, seed = 1234)
+    # temp = default.mu.options
+    
+    ar1.options=set.options(ar1.options,default.ar1.options)
+    
+  }
 
-  funks = h.map.maker(m,lagmax,model)
   
   if(class(data)=="numeric" || class(data)=="ts"){
     n = length(data)
@@ -90,10 +94,21 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     inla.options$control.compute$dic = FALSE
   }
 
-  lprior.fun.H = compute.Hprior(50,0.9,0.1,persistent=TRUE,model=model)
-
-  model.approx = INLA::inla.rgeneric.define(rgeneric.forcing.fast,lprior.fun.H = lprior.fun.H,
-                                      n=n,N=m,forcing=forcing,funks=funks)
+  
+  is.lrd = model %in% c("arfima","fgn")
+  
+  if(is.lrd){
+    lagmax = 1000L
+    funks = h.map.maker(m,lagmax,model)
+    lprior.fun.H = compute.Hprior(50,0.9,0.1,persistent=TRUE,model=model)
+    model.approx = INLA::inla.rgeneric.define(rgeneric.lrd,lprior.fun.H = lprior.fun.H,
+                                              n=n,N=m,forcing=forcing,funks=funks)
+  }else if(model == "ar1"){
+    #m = 1 #only one component is available so far
+    model.approx = INLA::inla.rgeneric.define(rgeneric.ar1,n=n,N=m,forcing=forcing)
+    #model.approx = INLA::inla.rgeneric.define(rgeneric.forcing.3AR1.free,n=n,N=m,forcing=forcing)
+  }
+  
   formula = y ~ -1+ f(idy, model=model.approx)
 
   if(print.progress){
@@ -117,7 +132,12 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   if(print.progress){
     cat("INLA completed in ",tid.approx," seconds\n",sep="")
   }
-
+  
+  if(model == "ar1"){
+    ar1.result = inla.climate.ar1(result.approx, m=m, nsamples=ar1.options$nsamples,
+                                  seed=ar1.options$seed, print.progress=print.progress)
+  }
+  
   if(!is.null(Qco2)){
     tcr.result = inla.climate.tcr(result.approx,Qco2,nsamples=tcr.options$nsamples,
                                   seed=tcr.options$seed, print.progress=print.progress)
@@ -131,6 +151,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     mu.result = inla.climate.mu(result.approx, forcing, quick=mu.quick, T0.corr = T0, nsamples=mu.options$nsamples,
                                 seed=mu.options$seed, print.progress=print.progress)
   }
+  
   
   if(print.progress){
     cat("Finishing up...\n",sep="")
@@ -150,6 +171,10 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
 
   if(compute.mu %in% c(1,2,"full","complete","quick","fast")){
     results = process.mu(results,mu.result)
+  }
+  if(model == "ar1"){
+    misc$ar1.options = ar1.options
+    results = process.ar1(results,ar1.result)
   }
   
   if(print.progress){

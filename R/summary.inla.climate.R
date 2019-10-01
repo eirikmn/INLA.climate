@@ -2,6 +2,16 @@ summary.inla.climate = function(object,digits=4L,...){
   
   ut=list()
   
+  is.lrd=TRUE
+  if(object$misc$model == "fgn"){
+    var.name = "H"
+  }else if(object$misc$model == "arfima"){
+    var.name = "d"
+  }else if(object$misc$model == "ar1"){
+    var.name = c()
+    is.lrd = FALSE
+  }
+  
   maxlength=2048L
   if(sum(nchar(object$misc$call)) > maxlength){
     ut=c(ut, list(call=paste0( substr(deparse(object$misc$call),1L,maxlength),"...") ) )
@@ -28,17 +38,31 @@ summary.inla.climate = function(object,digits=4L,...){
   names(cpu)=cpu.navn
   ut=c(ut, list(cpu.used=cpu))
   
+  if(is.lrd){
+    hypers=matrix(round(as.numeric(c(object$hyperparam$means,object$hyperparam$sd,object$hyperparam$quant0.025,
+                                     object$hyperparam$quant0.5,object$hyperparam$quant0.975)),digits=digits),
+                  nrow=length(object$inla.result$summary.hyperpar$mean),ncol=5)
+  }else if(object$misc$model=="ar1"){
+    hypers=matrix(round(as.numeric(c(object$hyperparam$means,object$hyperparam$sd,object$hyperparam$quant0.025,
+                                     object$hyperparam$quant0.5,object$hyperparam$quant0.975)),digits=digits),
+                  nrow=(length(object$inla.result$summary.hyperpar$mean)+1),ncol=5)
+  }
   
-  hypers=matrix(round(as.numeric(c(object$hyperparam$means,object$hyperparam$sd,object$hyperparam$quant0.025,
-                object$hyperparam$quant0.5,object$hyperparam$quant0.975)),digits=digits),
-                nrow=length(object$inla.result$summary.hyperpar$mean),ncol=5)
   hypers=as.data.frame(hypers)
   colnames(hypers)=c("mean","sd","0.025quant","0.5quant","0.975quant")
   hyper.navn=c()
-  if(length(object$inla.result$summary.hyperpar$mean)==5){
+  if(!object$misc$INLA.options$control.family$hyper$prec$fixed){
     hyper.navn=c(hyper.navn,"Precision for the Gaussian observations")
   }
-  hyper.navn=c(hyper.navn,"H","Sigmax","Sigmaf","F0")
+  hyper.navn=c(hyper.navn,var.name,"Sigmax","Sigmaf","F0")
+  if(object$misc$model == "ar1"){
+    for(k in 1:object$misc$m){
+      hyper.navn = c(hyper.navn, paste0("w",k))
+    }
+    for(k in 1:object$misc$m){
+      hyper.navn = c(hyper.navn, paste0("p",k))
+    }
+  }
   rownames(hypers)=hyper.navn
   
   ut=c(ut, list(hyperpar=hypers))
@@ -83,7 +107,7 @@ summary.inla.climate = function(object,digits=4L,...){
   if(!is.null(object$inla.result$summary.linear.predictor)){
     ut=c(ut, list(linear.predictor=round(object$inla.result$summary.linear.predictor),digits=digits))
   }
-  
+  ut = c(ut, list(model = object$misc$model))
   ut=c(ut, list(family=object$inla.result$family))
   class(ut) = "summary.inla.climate"
 
@@ -128,6 +152,8 @@ print.summary.inla.climate = function(x,digits=4L,...){
       cat("Quick computation of forcing response computed from ",format(x$mu.nsamples,digits=digits,scientific=FALSE)," samples.\n\n",sep="")
     }
   }
+  
+  
   
   if(!is.null(x$neffp)){
     cat("Expected number of effective parameters (std dev): ", format(x$neffp[1], digits=digits, nsmall=2)," (",

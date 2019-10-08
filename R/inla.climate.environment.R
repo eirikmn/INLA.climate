@@ -206,7 +206,7 @@ process.ar1 = function(object, ar1.result, misc=NULL){
     stop("Invalid 'object' class.")
   }
   if(object$misc$m==1){
-    marg = inla.tmarginal(1/(1+exp(-x)),object$inla.result$marginals.hyperpar$`Theta4 for idy`)
+    marg = inla.tmarginal(function(x)1/(1+exp(-x)),object$inla.result$marginals.hyperpar$`Theta4 for idy`)
     zmarg = inla.zmarginal(marg,silent=TRUE)
     ret$hyperparam$means$p = zmarg$mean
     ret$hyperparam$sd$p = zmarg$sd

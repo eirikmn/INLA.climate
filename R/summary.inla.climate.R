@@ -45,7 +45,7 @@ summary.inla.climate = function(object,digits=4L,...){
   }else if(object$misc$model=="ar1"){
     hypers=matrix(round(as.numeric(c(object$hyperparam$means,object$hyperparam$sd,object$hyperparam$quant0.025,
                                      object$hyperparam$quant0.5,object$hyperparam$quant0.975)),digits=digits),
-                  nrow=(length(object$inla.result$summary.hyperpar$mean)+1),ncol=5)
+                  nrow=(length(object$inla.result$summary.hyperpar$mean)+(object$misc$m>1)),ncol=5)
   }
   
   hypers=as.data.frame(hypers)
@@ -56,11 +56,15 @@ summary.inla.climate = function(object,digits=4L,...){
   }
   hyper.navn=c(hyper.navn,var.name,"Sigmax","Sigmaf","F0")
   if(object$misc$model == "ar1"){
-    for(k in 1:object$misc$m){
-      hyper.navn = c(hyper.navn, paste0("w",k))
-    }
-    for(k in 1:object$misc$m){
-      hyper.navn = c(hyper.navn, paste0("p",k))
+    if(object$misc$m == 1){
+      hyper.navn = c(hyper.navn, "p")
+    }else{
+      for(k in 1:object$misc$m){
+        hyper.navn = c(hyper.navn, paste0("w",k))
+      }
+      for(k in 1:object$misc$m){
+        hyper.navn = c(hyper.navn, paste0("p",k))
+      }
     }
   }
   rownames(hypers)=hyper.navn

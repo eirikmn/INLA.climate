@@ -11,11 +11,11 @@ plot.inla.climate = function(x,
   n = x$inla.result$misc$configs$contents$length[1]
   figure.count=1L
   
-  if(object$misc$model == "fgn"){
+  if(x$misc$model == "fgn"){
     var.name = "H"
-  }else if(object$misc$model == "arfima"){
+  }else if(x$misc$model == "arfima"){
     var.name = "d"
-  }else if(object$misc$model == "ar1"){
+  }else if(x$misc$model == "ar1"){
     var.name = c()
   }
   

@@ -56,8 +56,8 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
       LL = ar1.temp$p$samples-1
     }else{
       for(k in 1:m){
-        ww[,k] = ar1.temp$[[paste0("w",k)]]$samples
-        LL[,k] = ar1.temp$[[paste0("p",k)]]$samples-1
+        ww[,k] = ar1.temp[[paste0("w",k)]]$samples
+        LL[,k] = ar1.temp[[paste0("p",k)]]$samples-1
       }
     }
     

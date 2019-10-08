@@ -150,57 +150,57 @@ plot.inla.climate = function(x,
       abline(v=x$hyperparam$quant0.025$F0,lwd=0.8,col="gray")
       abline(v=x$hyperparam$quant0.975$F0,lwd=0.8,col="gray")
       title(xlab=expression(paste("Posterior density (",F[0],")")),ylab="",line=2.5,cex.lab=1)
-    }else if(x$misc$model == "ar1" && x$misc$m <=3)
+    }else if(x$misc$model == "ar1" && x$misc$m <=3 && x$misc$m >1)
       figure.count <- new.plot(postscript,pdf,prefix,figure.count,...) +1
-    par(mfrow=c(3,3),mar=(c(3.8,2.6,0.8,1)))
-    
-    for(k in 1:x$misc$m){
-      plot(x$hyperparam$marginals[[paste0("w",k)]],xlab="",ylab="",
-           main="",type="l")
-      abline(v=x$hyperparam$means[[paste0("w",k)]],lwd=0.8,col="black")
-      abline(v=x$hyperparam$quant0.025[[paste0("w",k)]],lwd=0.8,col="gray")
-      abline(v=x$hyperparam$quant0.975[[paste0("w",k)]],lwd=0.8,col="gray")
-      title(xlab=bquote(paste("Posterior density (",w[.(k)],")")),ylab="",line=2.5,cex.lab=1)
-    }
-    for(k in 1:x$misc$m){
-      plot(x$hyperparam$marginals[[paste0("p",k)]],xlab="",ylab="",
-           main="",type="l")
-      abline(v=x$hyperparam$means[[paste0("p",k)]],lwd=0.8,col="black")
-      abline(v=x$hyperparam$quant0.025[[paste0("p",k)]],lwd=0.8,col="gray")
-      abline(v=x$hyperparam$quant0.975[[paste0("p",k)]],lwd=0.8,col="gray")
-      title(xlab=bquote(paste("Posterior density (",phi[.(k)],")")),ylab="",line=2.5,cex.lab=1)
-    }
-    
-    
-    plot(x$hyperparam$marginals$sigmax,xlab="",ylab="",
-         main="",type="l")
-    abline(v=x$hyperparam$means$sigmax,lwd=0.8,col="black")
-    abline(v=x$hyperparam$quant0.025$sigmax,lwd=0.8,col="gray")
-    abline(v=x$hyperparam$quant0.975$sigmax,lwd=0.8,col="gray")
-    title(xlab=expression(paste("Posterior density (",sigma[epsilon],")")),ylab="",line=2.5,cex.lab=1)
-    
-    plot(x$hyperparam$marginals$sigmaf,xlab="",ylab="",
-         main="",type="l")
-    abline(v=x$hyperparam$means$sigmaf,lwd=0.8,col="black")
-    abline(v=x$hyperparam$quant0.025$sigmaf,lwd=0.8,col="gray")
-    abline(v=x$hyperparam$quant0.975$sigmaf,lwd=0.8,col="gray")
-    title(xlab=expression(paste("Posterior density (",sigma[f],")")),ylab="",line=2.5,cex.lab=1)
-    
-    plot(x$hyperparam$marginals$F0,xlab="",ylab="",
-         main="",type="l")
-    abline(v=x$hyperparam$means$F0,lwd=0.8,col="black")
-    abline(v=x$hyperparam$quant0.025$F0,lwd=0.8,col="gray")
-    abline(v=x$hyperparam$quant0.975$F0,lwd=0.8,col="gray")
-    title(xlab=expression(paste("Posterior density (",F[0],")")),ylab="",line=2.5,cex.lab=1)
-    
-    
-    
-    par(mfrow=c(1,1),mar=(c(5,4,4,2)+0.1))
-    if(postscript || pdf){
-      if (names(dev.cur()) != "null device") {
-        dev.off()
+      par(mfrow=c(3,3),mar=(c(3.8,2.6,0.8,1)))
+      
+      for(k in 1:x$misc$m){
+        plot(x$hyperparam$marginals[[paste0("w",k)]],xlab="",ylab="",
+             main="",type="l")
+        abline(v=x$hyperparam$means[[paste0("w",k)]],lwd=0.8,col="black")
+        abline(v=x$hyperparam$quant0.025[[paste0("w",k)]],lwd=0.8,col="gray")
+        abline(v=x$hyperparam$quant0.975[[paste0("w",k)]],lwd=0.8,col="gray")
+        title(xlab=bquote(paste("Posterior density (",w[.(k)],")")),ylab="",line=2.5,cex.lab=1)
       }
-    }
+      for(k in 1:x$misc$m){
+        plot(x$hyperparam$marginals[[paste0("p",k)]],xlab="",ylab="",
+             main="",type="l")
+        abline(v=x$hyperparam$means[[paste0("p",k)]],lwd=0.8,col="black")
+        abline(v=x$hyperparam$quant0.025[[paste0("p",k)]],lwd=0.8,col="gray")
+        abline(v=x$hyperparam$quant0.975[[paste0("p",k)]],lwd=0.8,col="gray")
+        title(xlab=bquote(paste("Posterior density (",phi[.(k)],")")),ylab="",line=2.5,cex.lab=1)
+      }
+      
+      
+      plot(x$hyperparam$marginals$sigmax,xlab="",ylab="",
+           main="",type="l")
+      abline(v=x$hyperparam$means$sigmax,lwd=0.8,col="black")
+      abline(v=x$hyperparam$quant0.025$sigmax,lwd=0.8,col="gray")
+      abline(v=x$hyperparam$quant0.975$sigmax,lwd=0.8,col="gray")
+      title(xlab=expression(paste("Posterior density (",sigma[epsilon],")")),ylab="",line=2.5,cex.lab=1)
+      
+      plot(x$hyperparam$marginals$sigmaf,xlab="",ylab="",
+           main="",type="l")
+      abline(v=x$hyperparam$means$sigmaf,lwd=0.8,col="black")
+      abline(v=x$hyperparam$quant0.025$sigmaf,lwd=0.8,col="gray")
+      abline(v=x$hyperparam$quant0.975$sigmaf,lwd=0.8,col="gray")
+      title(xlab=expression(paste("Posterior density (",sigma[f],")")),ylab="",line=2.5,cex.lab=1)
+      
+      plot(x$hyperparam$marginals$F0,xlab="",ylab="",
+           main="",type="l")
+      abline(v=x$hyperparam$means$F0,lwd=0.8,col="black")
+      abline(v=x$hyperparam$quant0.025$F0,lwd=0.8,col="gray")
+      abline(v=x$hyperparam$quant0.975$F0,lwd=0.8,col="gray")
+      title(xlab=expression(paste("Posterior density (",F[0],")")),ylab="",line=2.5,cex.lab=1)
+      
+      
+      
+      par(mfrow=c(1,1),mar=(c(5,4,4,2)+0.1))
+      if(postscript || pdf){
+        if (names(dev.cur()) != "null device") {
+          dev.off()
+        }
+      }
     
   }
 

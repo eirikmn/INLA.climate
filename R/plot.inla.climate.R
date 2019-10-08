@@ -150,7 +150,7 @@ plot.inla.climate = function(x,
       abline(v=x$hyperparam$quant0.025$F0,lwd=0.8,col="gray")
       abline(v=x$hyperparam$quant0.975$F0,lwd=0.8,col="gray")
       title(xlab=expression(paste("Posterior density (",F[0],")")),ylab="",line=2.5,cex.lab=1)
-    }else if(x$misc$model == "ar1" && x$misc$m <=3 && x$misc$m >1)
+    }else if(x$misc$model == "ar1" && x$misc$m <=3 && x$misc$m >1){
       figure.count <- new.plot(postscript,pdf,prefix,figure.count,...) +1
       par(mfrow=c(3,3),mar=(c(3.8,2.6,0.8,1)))
       
@@ -201,6 +201,8 @@ plot.inla.climate = function(x,
           dev.off()
         }
       }
+    }
+      
     
   }
 

@@ -48,16 +48,16 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
     a=3
     hyperpars[,2] = -a+2*a/(1+exp(-x[,3]))
     m = (dim(x)[2]-2)/2
-    ar1.temp= inla.climate.ar1(result,m=m,nsamples=nsamples,seed=seed,print.progress=print.progress)
+    ar1.temp= inla.climate.ar1(climate.res,m=m,nsamples=nsamples,seed=seed,print.progress=print.progress)
     ww = matrix(NA,nrow=nsamples,ncol=m)
     LL = matrix(NA,nrow=nsamples,ncol=m)
     if(m == 1){
       ww = rep(1,nsamples)
-      LL = ar1.temp$p$samples-1
+      LL = inla.rmarginal(nsamples,ar1.temp$p$density)-1 #lambda
     }else{
       for(k in 1:m){
         ww[,k] = ar1.temp[[paste0("w",k)]]$samples
-        LL[,k] = ar1.temp[[paste0("p",k)]]$samples-1
+        LL[,k] = ar1.temp[[paste0("p",k)]]$samples-1 #lambda
       }
     }
     
@@ -93,9 +93,16 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
         #dyn.load(file.path(.Library,"INLA.climate/libs/Rc_Q.so"))
         dyn.load(file.path("Rc_mu_ar1.so"))
       }
-      res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),as.integer(m),
-               as.double(ww[iter,]),as.double(LL[iter,]),as.double(hyperpars[iter,1]),
-               as.double(hyperpars[iter,2]))
+      if(m == 1){
+        res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),as.integer(m),
+                 as.double(1),as.double(LL[iter]),as.double(hyperpars[iter,1]),
+                 as.double(hyperpars[iter,2]))
+      }else{
+        res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),as.integer(m),
+                 as.double(ww[iter,]),as.double(LL[iter,]),as.double(hyperpars[iter,1]),
+                 as.double(hyperpars[iter,2]))
+      }
+      
     }
     
 
@@ -172,7 +179,7 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
     }else{
       compute.mu=1
     }
-    result$misc$mu.options$Qco2 = compute.mu
+    result$misc$mu.options$compute.mu = compute.mu
     return(result)
   }else{
     if(print.progress){

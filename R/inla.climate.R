@@ -149,7 +149,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
       mu.quick=TRUE
     }
     mu.result = inla.climate.mu(result.approx, forcing, quick=mu.quick, T0.corr = T0, nsamples=mu.options$nsamples,
-                                seed=mu.options$seed, print.progress=print.progress)
+                                seed=mu.options$seed, print.progress=print.progress,model=model)
   }
   
   

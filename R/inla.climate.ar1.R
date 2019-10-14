@@ -14,7 +14,7 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
   
   
   if(print.progress){
-    cat("Starting Monte Carlo sampling with n = ",format(nsamples,scientific=F)," simulations..\n",sep="")
+    cat("Starting ar1 weights and first-lag correlation parameter Monte Carlo sampling with n = ",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
   tid.start = proc.time()[[3]]
   set.seed(seed)

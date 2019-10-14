@@ -1,4 +1,5 @@
-inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,seed=1234,print.progress=FALSE,model="fgn"){
+inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,seed=1234,
+                           print.progress=FALSE,model="fgn"){
 
   catch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){

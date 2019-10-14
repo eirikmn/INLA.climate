@@ -173,15 +173,45 @@ process.tcr = function(object, tcr.result, misc=NULL){
   }else{
     stop("Invalid 'object' class.")
   }
-    ret$TCR=list(mean=tcr.result$mean, sd=tcr.result$sd,
-                     quant0.025=tcr.result$quant0.025,
-                     quant0.5=tcr.result$quant0.5,
-                     quant0.975=tcr.result$quant0.975,
-                     #creds=tcr.result$creds,
-                     samples=list(
-                       TCR=tcr.result$samples$TCR, H=tcr.result$samples$H,
-                       sigmaf=tcr.result$samples$sigmaf,F0=tcr.result$samples$F0))
-    ret$time$TCR = tcr.result$time
+  # if("H" %in% names(tcr.result$samples)){
+  #   is.lrd = TRUE
+    # ret$TCR=list(mean=tcr.result$mean, sd=tcr.result$sd,
+    #              quant0.025=tcr.result$quant0.025,
+    #              quant0.5=tcr.result$quant0.5,
+    #              quant0.975=tcr.result$quant0.975,
+    #              #creds=tcr.result$creds,
+    #              samples=list(
+    #                TCR=tcr.result$samples$TCR, H=tcr.result$samples$H,
+    #                sigmaf=tcr.result$samples$sigmaf,F0=tcr.result$samples$F0))
+    # ret$time$TCR = tcr.result$time
+  ret$TCR = tcr.result
+  # }else{
+  #   is.lrd = FALSE
+  #   m = (length(names(tcr.result$samples))-2)/2
+  #   if(m==1){
+  #     ret $TCR= list(mean=tcr.result$mean,sd = tcr.result$sd,
+  #                quant0.025=tcr.result$quant0.025,
+  #                quant0.5=tcr.result$quant0.5,
+  #                quant0.975=tcr.result$quant0.975,
+  #                samples=list(
+  #                  tcr.result$samples
+  #                  )
+  #   }else{
+  #     ret$TCR = list(mean=mean(hyperpars[,tcr.col]),sd = sd(hyperpars[,tcr.col]),
+  #                quant0.025=INLA::inla.qmarginal(0.025,mcfit),
+  #                quant0.5=INLA::inla.qmarginal(0.5,mcfit),
+  #                quant0.975=INLA::inla.qmarginal(0.975,mcfit),
+  #                samples=list(
+  #                  TCR=hyperpars[,tcr.col],sigmaf=hyperpars[,1],shift=hyperpars[,2]))
+  #     for(k in 1:m){
+  #       ret$samples[[paste0("w",k)]] = ww[,k]
+  #     }
+  #     for(k in 1:m){
+  #       ret$samples[[paste0("p",k)]] = LL[,k]+1
+  #     }
+  #   }
+  # }
+    
     # ret$misc$TCR.options$nsamples = object$climate.misc$tcr.options$nsamples
     # ret$misc$TCR.options$seed = object$climate.misc$tcr.options$seed
     

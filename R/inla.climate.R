@@ -35,7 +35,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   inla.options=set.options(inla.options,default.inla.options)
   
   
-  if(length(Qco2)>0 && model %in% c("fgn","arfima")){
+  if(length(Qco2)>0){
     default.tcr.options = list(nsamples = 100000, seed = 1234)
     # temp = default.tcr.options
     
@@ -165,7 +165,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   results = process.inla(result.approx, misc)
   
   
-  if(length(Qco2) > 0 && model %in% c("fgn","arfima")){
+  if(length(Qco2) > 0){
     results = process.tcr(results,tcr.result)
   }
 

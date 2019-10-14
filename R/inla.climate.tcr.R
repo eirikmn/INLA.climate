@@ -1,4 +1,5 @@
-inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress=FALSE){
+inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
+                            print.progress=FALSE,model="fgn"){
   
   atch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
@@ -25,12 +26,39 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
   
   #x = inla.posterior.sample(nsamples,r,seed=inla.seed) #int.strategy=grid
   x = INLA::inla.hyperpar.sample(nsamples,climate.res)
-  hyperpars = matrix(NA,nrow=nsamples,ncol=4) #c(H,sf,shift,TCR)
+  if(dim(x)[2]>4){
+    model = "ar1"
+  }
   zmc = 1:80
-
-  hyperpars[,1] = 0.5+0.5/(1+exp(-x[,2]))
-  hyperpars[,2] = 1/sqrt(exp(x[,3]))
-  hyperpars[,3] = x[,4]
+  if(model %in% c("fgn","arfima")){
+    tcr.col = 4
+    hyperpars = matrix(NA,nrow=nsamples,ncol=tcr.col) #c(H,sf,shift,TCR)
+    
+    hyperpars[,1] = 0.5+0.5/(1+exp(-x[,2]))
+    hyperpars[,2] = 1/sqrt(exp(x[,3]))
+    hyperpars[,3] = -a+2*a/(1+exp(-x[,4]))
+  }else{
+    tcr.col=3
+    hyperpars = matrix(NA,nrow=nsamples,ncol=tcr.col) #c(H,sf,F0,w1,...,wm,L1,...,Lm)
+    hyperpars[,1] = 1/sqrt(exp(x[,2]))
+    a=3
+    hyperpars[,2] = -a+2*a/(1+exp(-x[,3]))
+    m = (dim(x)[2]-2)/2
+    ar1.temp= INLA.climate:::inla.climate.ar1(climate.res,m=m,nsamples=nsamples,seed=seed,print.progress=print.progress)
+    ww = matrix(NA,nrow=nsamples,ncol=m)
+    LL = matrix(NA,nrow=nsamples,ncol=m)
+    if(m == 1){
+      ww = rep(1,nsamples)
+      LL = inla.rmarginal(nsamples,ar1.temp$p$density)-1 #lambda
+    }else{
+      for(k in 1:m){
+        ww[,k] = ar1.temp[[paste0("w",k)]]$samples
+        LL[,k] = ar1.temp[[paste0("p",k)]]$samples-1 #lambda
+      }
+    }
+    
+  }
+  
 
   tid.start = proc.time()[[3]]
   #if(!is.loaded('Rc_mu')){
@@ -42,10 +70,28 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
 
   meansmc = numeric(80)
   for(iter in 1:nsamples){
-
-    #zzmc = hyperpars[iter,2]*(zmc+hyperpars[iter,3])
-    res = .C('Rc_mu',mumeans=as.matrix(meansmc,ncol=1),as.double(zmc),as.integer(80),
-             as.double(hyperpars[iter,1]),as.double(hyperpars[iter,2]),as.double(hyperpars[iter,3]))
+    if(model %in% c("fgn","arfima")){
+      #zzmc = hyperpars[iter,2]*(zmc+hyperpars[iter,3])
+      res = .C('Rc_mu',mumeans=as.matrix(meansmc,ncol=1),as.double(zmc),as.integer(80),
+               as.double(hyperpars[iter,1]),as.double(hyperpars[iter,2]),as.double(hyperpars[iter,3]))
+    }else if(model == "ar1"){
+      if(!is.loaded('Rc_mu_ar1')){
+        #dyn.load(file.path(.Library,"INLA.climate/libs/Rc_Q.so"))
+        dyn.load(file.path("Rc_mu_ar1.so"))
+      }
+      if(m == 1){
+        res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(zmc),as.integer(80),as.integer(m),
+                 as.double(1),as.double(LL[iter]),as.double(hyperpars[iter,1]),
+                 as.double(hyperpars[iter,2]))
+      }else{
+        res = .C('Rc_mu_ar1',mumeans=as.matrix(meansmc,ncol=1),as.double(zmc),as.integer(80),as.integer(m),
+                 as.double(ww[iter,]),as.double(LL[iter,]),as.double(hyperpars[iter,1]),
+                 as.double(hyperpars[iter,2]))
+      }
+      
+      
+    }
+    
     #mu.eans = mu.cwrapper(as.double(zmc),as.integer(80),as.double(hyperpars[iter,1]),
     #                      as.double(hyperpars[iter,2]),as.double(hyperpars[iter,3]))
     # strukturmc = (0.5+seq(0,80-1,length.out=80))^(hyperpars[iter,1]-3/2)
@@ -54,10 +100,10 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
     #  }
     Tres = Qco2/70 * res$mumeans #meansmc
 
-    hyperpars[iter,4] = 1/20*sum(Tres[61:80])
+    hyperpars[iter,tcr.col] = 1/20*sum(Tres[61:80])
 
   }
-  mcfit = density(hyperpars[,4])
+  mcfit = density(hyperpars[,tcr.col])
   tid.slutt = proc.time()[[3]]
   tid.mc=tid.slutt-tid.start
 
@@ -65,12 +111,37 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,print.progress
     cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
-  ret = list(mean=mean(hyperpars[,4]),sd = sd(hyperpars[,4]),
-             quant0.025=INLA::inla.qmarginal(0.025,mcfit),
-             quant0.5=INLA::inla.qmarginal(0.5,mcfit),
-             quant0.975=INLA::inla.qmarginal(0.975,mcfit),
-             samples=list(
-               TCR=hyperpars[,4],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]))
+  if(model %in% c("arfima","fgn")){
+    ret = list(mean=mean(hyperpars[,tcr.col]),sd = sd(hyperpars[,tcr.col]),
+               quant0.025=INLA::inla.qmarginal(0.025,mcfit),
+               quant0.5=INLA::inla.qmarginal(0.5,mcfit),
+               quant0.975=INLA::inla.qmarginal(0.975,mcfit),
+               samples=list(
+                 TCR=hyperpars[,tcr.col],H=hyperpars[,1],sigmaf=hyperpars[,2],shift=hyperpars[,3]))
+  }else if(model == "ar1"){
+    if(m==1){
+      ret = list(mean=mean(hyperpars[,tcr.col]),sd = sd(hyperpars[,tcr.col]),
+                 quant0.025=INLA::inla.qmarginal(0.025,mcfit),
+                 quant0.5=INLA::inla.qmarginal(0.5,mcfit),
+                 quant0.975=INLA::inla.qmarginal(0.975,mcfit),
+                 samples=list(
+                   TCR=hyperpars[,tcr.col],p=LL+1,sigmaf=hyperpars[,1],shift=hyperpars[,2]))
+    }else{
+      ret = list(mean=mean(hyperpars[,tcr.col]),sd = sd(hyperpars[,tcr.col]),
+                 quant0.025=INLA::inla.qmarginal(0.025,mcfit),
+                 quant0.5=INLA::inla.qmarginal(0.5,mcfit),
+                 quant0.975=INLA::inla.qmarginal(0.975,mcfit),
+                 samples=list(
+                   TCR=hyperpars[,tcr.col],sigmaf=hyperpars[,1],shift=hyperpars[,2]))
+      for(k in 1:m){
+        ret$samples[[paste0("w",k)]] = ww[,k]
+      }
+      for(k in 1:m){
+        ret$samples[[paste0("p",k)]] = LL[,k]+1
+      }
+    }
+  }
+  
   
   if(class(result) == "inla.climate"){
     if(print.progress){

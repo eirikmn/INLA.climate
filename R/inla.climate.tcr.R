@@ -30,6 +30,8 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
     model = "ar1"
   }
   zmc = 1:80
+  a=3
+  
   if(model %in% c("fgn","arfima")){
     tcr.col = 4
     hyperpars = matrix(NA,nrow=nsamples,ncol=tcr.col) #c(H,sf,shift,TCR)
@@ -44,7 +46,7 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
     a=3
     hyperpars[,2] = -a+2*a/(1+exp(-x[,3]))
     m = (dim(x)[2]-2)/2
-    ar1.temp= INLA.climate:::inla.climate.ar1(climate.res,m=m,nsamples=nsamples,seed=seed,print.progress=print.progress)
+    ar1.temp= inla.climate.ar1(climate.res,m=m,nsamples=nsamples,seed=seed,print.progress=print.progress)
     ww = matrix(NA,nrow=nsamples,ncol=m)
     LL = matrix(NA,nrow=nsamples,ncol=m)
     if(m == 1){

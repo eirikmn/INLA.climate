@@ -192,7 +192,8 @@ rgeneric.ar1 = function(
     a=3
     
     #skal ikke interne variabler brukes her? og hva så med w vektene?
-    lprior = lprior + dnorm(-a+2*a/(1+exp(-params$F0)),sd=0.2,log=TRUE)+log(2*a)-params$F0 -2*log(1+exp(-params$F0))
+    shift.a = 3
+    lprior = lprior + dnorm(-shift.a+2*shift.a/(1+exp(-params$F0)),sd=0.2,log=TRUE)+log(2*shift.a)-params$F0 -2*log(1+exp(-params$F0))
     if(NN==1){
       lprior = lprior + dnorm(theta[4],log=TRUE)
       return(lprior)

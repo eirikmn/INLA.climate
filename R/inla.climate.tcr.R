@@ -16,7 +16,7 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
   
   
   if(print.progress){
-    cat("Starting Monte Carlo sampling with n = ",format(nsamples,scientific=F)," simulations..\n",sep="")
+    cat("Starting TCR Monte Carlo sampling with n = ",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
   set.seed(seed)
   inla.seed = as.integer(runif(1)*.Machine$integer.max)
@@ -110,7 +110,7 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
   tid.mc=tid.slutt-tid.start
 
   if(print.progress){
-    cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
+    cat("Finished TCR Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
   if(model %in% c("arfima","fgn")){

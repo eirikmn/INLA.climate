@@ -24,7 +24,7 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
   
   
   if(print.progress){
-    cat("Starting Monte Carlo sampling with n=",format(nsamples,scientific=F)," simulations..\n",sep="")
+    cat("Starting mu Monte Carlo sampling with n=",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
   set.seed(seed)
   inla.seed = as.integer(runif(1)*.Machine$integer.max)
@@ -138,7 +138,7 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
   tid.mc=tid.slutt-tid.start
 
   if(print.progress){
-    cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
+    cat("Finished mu Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
   ret = list(mean=mu.mean+T0.corr, sd = mu.sd)

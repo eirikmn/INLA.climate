@@ -183,8 +183,9 @@ process.tcr = function(object, tcr.result, misc=NULL){
     #              samples=list(
     #                TCR=tcr.result$samples$TCR, H=tcr.result$samples$H,
     #                sigmaf=tcr.result$samples$sigmaf,F0=tcr.result$samples$F0))
-    # ret$time$TCR = tcr.result$time
+  
   ret$TCR = tcr.result
+  ret$time$TCR = tcr.result$time
   # }else{
   #   is.lrd = FALSE
   #   m = (length(names(tcr.result$samples))-2)/2

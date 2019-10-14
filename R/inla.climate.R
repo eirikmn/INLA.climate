@@ -140,7 +140,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   
   if(!is.null(Qco2)){
     tcr.result = inla.climate.tcr(result.approx,Qco2,nsamples=tcr.options$nsamples,
-                                  seed=tcr.options$seed, print.progress=print.progress)
+                                  seed=tcr.options$seed, print.progress=print.progress,model=model)
   }
   if(compute.mu %in% c(1,2,"full","complete","quick","fast") ){
     if(compute.mu %in% c(2,"full","complete")){

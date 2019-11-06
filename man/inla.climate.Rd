@@ -8,7 +8,7 @@ An INLA climate forcing model for global mean surface temperature
 Fits forcing data to a given temperature dataset using INLA. The undocumented forcing variables not included in \code{forcing} are collectively assumed a stochastic fGn process. Also uses Monte Carlo simulations to obtain Bayesian inference about the transient climate response.
 }
 \usage{
-inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, restart.inla = FALSE, m = 4, model = "fgn", print.progress = FALSE,
+inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, restart.inla = FALSE, m = 4, model = "fgn", formula=NULL, print.progress = FALSE,
    inla.options = list(),
    tcr.options = list(),
    mu.options = list(),
@@ -39,6 +39,9 @@ inla.climate(data, forcing, Qco2 = NULL,compute.mu=NULL, stepLength = 0.01, rest
 }
   \item{model}{
     The model used to describe stochastic forcing. For long memory responses the fractional Gaussian noise (\code{model="fgn"}) and ARFIMA(0,d,0) (\code{model="arfima"}) are supported. The first-order autoregressive model (\code{model="ar1"}) is also supported.
+  }
+  \item{formula}{
+    The formula for the additive predictor. If \code{formula=NULL} the default option of forced and unforced temperature response, with no additional trend is selected.
   }
   \item{print.progress}{
     Prints progression if \code{TRUE}.

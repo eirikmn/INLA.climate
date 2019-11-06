@@ -1,6 +1,6 @@
 
 inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.01,restart.inla=FALSE,
-                        m = 4,model="fgn", formula=NULL,print.progress=FALSE,
+                        m = 4,model="fgn", print.progress=FALSE,
                         inla.options = list(),
                         tcr.options = list(),
                         mu.options = list(),
@@ -109,10 +109,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     #model.approx = INLA::inla.rgeneric.define(rgeneric.forcing.3AR1.free,n=n,N=m,forcing=forcing)
   }
   
-  if(is.null(formula)){
-    formula = y ~ -1+ f(idy, model=model.approx)
-  }
-  
+  formula = y ~ -1+ f(idy, model=model.approx)
 
   if(print.progress){
     print("Starting INLA..")

@@ -42,7 +42,8 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
     hyperpars[,1] = 0.5+0.5/(1+exp(-x[,2]))
     hyperpars[,2] = 1/sqrt(exp(x[,3]))
     a=3
-    hyperpars[,3] = -a+2*a/(1+exp(-x[,4]))
+    hyperpars[,3] = x[,4]
+    #hyperpars[,3] = -a+2*a/(1+exp(-x[,4]))
   }else{
     hyperpars = matrix(NA,nrow=nsamples,ncol=(2)) #c(H,sf,F0,w1,...,wm,L1,...,Lm)
     hyperpars[,1] = 1/sqrt(exp(x[,2]))

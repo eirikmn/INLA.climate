@@ -24,25 +24,29 @@ process.inla = function(object, misc=NULL){
     mem.approx = INLA::inla.emarginal(var.func,margs$`Theta2 for idy`)
     sigmax.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta1 for idy`)
     sigmaf.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta3 for idy`)
-    F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta4 for idy`)
+    F0.approx = INLA::inla.emarginal(function(x) x,margs$`Theta4 for idy`)
+    #F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta4 for idy`)
     
     margs.approx = object$marginals.hyperpar
     marg.mem = INLA::inla.tmarginal(var.func,margs.approx$`Theta2 for idy`)
     marg.sx = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta1 for idy`)
     marg.sf = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta3 for idy`)
-    marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta4 for idy`)
+    marg.F0 = INLA::inla.tmarginal(function(x) x,margs.approx$`Theta4 for idy`)
+    #marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta4 for idy`)
     
     zmarg.mem = INLA::inla.zmarginal(marg.mem,silent=TRUE)
     hpd.mem = INLA::inla.hpdmarginal(0.95,marg.mem)
   }else{
     sigmax.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta1 for idy`)
     sigmaf.approx = INLA::inla.emarginal(function(x) 1/sqrt(exp(x)),margs$`Theta2 for idy`)
-    F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta3 for idy`)
+    F0.approx = INLA::inla.emarginal(function(x) x,margs$`Theta3 for idy`)
+    #F0.approx = INLA::inla.emarginal(function(x) -a + 2*a/(1+exp(-x)),margs$`Theta3 for idy`)
     
     margs.approx = object$marginals.hyperpar
     marg.sx = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta1 for idy`)
     marg.sf = INLA::inla.tmarginal(function(x) 1/sqrt(exp(x)),margs.approx$`Theta2 for idy`)
-    marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta3 for idy`)
+    marg.F0 = INLA::inla.tmarginal(function(x) x,margs.approx$`Theta3 for idy`)
+    #marg.F0 = INLA::inla.tmarginal(function(x) -a + 2*a/(1+exp(-x)),margs.approx$`Theta3 for idy`)
   }
   
   

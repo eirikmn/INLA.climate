@@ -34,9 +34,11 @@ rgeneric.lrd = function(
     kappa = exp(theta[1])
     H = 0.5 + 0.5 / (1 + exp(-theta[2]))
     scale = exp(theta[3])
-    a = 3
-    shift = -a + 2*a/(1+exp(-theta[4]))
-
+    
+    #a = 3
+    #shift = -a + 2*a/(1+exp(-theta[4]))
+    shift=theta[4]
+    
     return(list(H = H, kappa = kappa, scale = scale, shift = shift))
   }
 
@@ -174,8 +176,9 @@ rgeneric.lrd = function(
     lprior = lprior + llprior.fun.H(theta[2])
     #lprior = lprior + log(0.5)+log(1+1/(1+exp(-theta[2]))) - theta[2]-2*log(1+exp(-theta[2]))
     a=3
-    lprior = lprior + dnorm(-a+2*a/(1+exp(-params$shift)),sd=0.2,log=TRUE)+log(2*a)-params$shift -2*log(1+exp(-params$shift))
-
+    #lprior = lprior + dnorm(-a+2*a/(1+exp(-params$shift)),sd=0.2,log=TRUE)+log(2*a)-params$shift -2*log(1+exp(-params$shift))
+    lprior = lprior + dnorm(theta[4],log=TRUE)
+    
     return (lprior)
   }
 

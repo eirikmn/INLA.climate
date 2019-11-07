@@ -19,7 +19,7 @@ rgeneric.ar1 = function(
     kappax = exp(theta[1])
     kappaf = exp(theta[2])
     a = 3
-    F0 = -a + 2*a/(1+exp(-theta[3]))
+    F0=theta[3]#F0 = -a + 2*a/(1+exp(-theta[3]))
     para=data.frame(kappax=kappax,kappaf=kappaf,F0=F0)
     denom = sum(exp(c(0,theta[3+(1:(NN-1))])))
     
@@ -193,6 +193,7 @@ rgeneric.ar1 = function(
     
     #skal ikke interne variabler brukes her? og hva så med w vektene?
     shift.a = 3
+    lprior = lprior + dnorm(theta[4],log=TRUE)
     lprior = lprior + dnorm(-shift.a+2*shift.a/(1+exp(-params$F0)),sd=0.2,log=TRUE)+log(2*shift.a)-params$F0 -2*log(1+exp(-params$F0))
     if(NN==1){
       lprior = lprior + dnorm(theta[4],log=TRUE)

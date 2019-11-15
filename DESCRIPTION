@@ -1,7 +1,7 @@
 Package: INLA.climate
 Type: Package
 Title: Full Bayesian analysis of radiative forcing climate model
-Version: 0.6.0
+Version: 0.6.1
 Date: 2019-02-04
 Author:@R c(person("Eirik", "Myrvoll-Nilsen", email = "eirikmn91@gmail.com", role = c("cre", "aut")))
 Maintainer: Eirik Myrvoll-Nilsen <eirikmn91@gmail.com>
@@ -9,7 +9,7 @@ Description: Full Bayesian analysis of global mean surface temperature model tha
 License: GPL (>= 2)
 Suggests: INLA
 Imports: Matrix
-Depends: R (>= 3.3), sp, stats, methods
+Depends: R (>= 3.5), sp, stats, methods
 Additional_repositories: https://inla.r-inla-download.org/R/testing
 NeedsCompilation: yes
 Encoding: UTF-8

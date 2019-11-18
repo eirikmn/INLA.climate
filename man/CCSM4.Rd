@@ -24,6 +24,14 @@ data(CCSM4)
   }
   }
 }
+\references{
+Gent, P.R., G. Danabasoglu, L.J. Donner, M.M. Holland, E.C. Hunke, S.R. Jayne, D.M. Lawrence, R.B. Neale, P.J. Rasch, M. Vertenstein, P.H. Worley, Z. Yang, and M. Zhang, 2011: The Community Climate System Model Version 4. J. Climate, 24, 4973–4991, https://doi.org/10.1175/2011JCLI4083.1
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
 \examples{
 # Load data
 data(CCSM4, package = "INLA.climate")

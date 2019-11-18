@@ -24,6 +24,14 @@ data(CanESM2)
   }
   }
 }
+\references{
+Chylek, Petr & Li, Jiangnan & Dubey, Manvendra & Wang, Muyin & Lesins, G.. (2011). Observed and model simulated 20th century Arctic temperature variability: Canadian Earth System Model CanESM2. Atmospheric Chemistry and Physics Discussions. 11. 22893-22907. 10.5194/acpd-11-22893-2011.
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
 \examples{
 # Load data
 data(CanESM2, package = "INLA.climate")

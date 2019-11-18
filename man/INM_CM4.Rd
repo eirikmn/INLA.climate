@@ -24,6 +24,14 @@ data(INM_CM4)
   }
   }
 }
+\references{
+Volodin, Evgeny & Dianskii, N. & Gusev, Anatoly. (2010). Simulating present-day climate with the INMCM4.0 coupled model of the atmospheric and oceanic general circulations. Izvestiya, Atmospheric and Oceanic Physics. 46. 414-431. 10.1134/S000143381004002X. 
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
 \examples{
 # Load data
 data(INM_CM4, package = "INLA.climate")

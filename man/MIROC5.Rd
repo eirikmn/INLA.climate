@@ -24,6 +24,14 @@ data(MIROC5)
   }
   }
 }
+\references{
+Watanabe, M., T. Suzuki, R. O’ishi, Y. Komuro, S. Watanabe, S. Emori, T. Takemura, M. Chikira, T. Ogura, M. Sekiguchi, K. Takata, D. Yamazaki, T. Yokohata, T. Nozawa, H. Hasumi, H. Tatebe, and M. Kimoto, 2010: Improved Climate Simulation by MIROC5: Mean States, Variability, and Climate Sensitivity. J. Climate, 23, 6312–6335, https://doi.org/10.1175/2010JCLI3679.1
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
 \examples{
 # Load data
 data(MIROC5, package = "INLA.climate")

@@ -24,6 +24,14 @@ data(MIROC_ESM)
   }
   }
 }
+\references{
+Watanabe, Shingo & Hajima, Tomohiro & Sudo, Kengo & Nagashima, Tatsuya & Takemura, Toshihiko & Okajima, H. & Nozawa, Toru & Kawase, H. & Abe, Manabu & Yokohata, Tokuta & Ise, Toshifumi & Sato, Hisashi. (2011). MIROC-ESM: model description and basic results of CMIP5-20c3m experiments. Geoscientific Model Development Discussions. 4. 10.5194/gmdd-4-1063-2011. 
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
 \examples{
 # Load data
 data(MIROC_ESM, package = "INLA.climate")

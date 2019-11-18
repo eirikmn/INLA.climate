@@ -21,6 +21,10 @@ data(HansenForcing)
   }
   }
 }
+\references{
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+}
 \examples{
 # Load data
 data(HansenForcing, package = "INLA.climate")

@@ -24,6 +24,14 @@ data(IPSL_CM5A_LR)
   }
   }
 }
+\references{
+Dufresne, Jean-Louis & Foujols, Marie-Alice & Denvil, S. & Caubel, Arnaud & Marti, Olivier & Aumont, Olivier & Balkanski, Yves & Bekki, Slimane & Bellenger, Hugo & Benshila, Rachid & Bony, Sandrine & Bopp, Laurent & Braconnot, Pascale & Brockmann, Patrick & Cadule, Patricia & Cheruy, F. & Codron, Francis & Cozic, Anne & Cugnet, David & Vuichard, N.. (2013). Climate change projections using the IPSL-CM5 earth system model: from CMIP3 to CMIP5. Climate Dynamics. 40. 2123–2165. 10.1007/s00382-012-1636-1. 
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
 \examples{
 # Load data
 data(IPSL_CM5A_LR, package = "INLA.climate")

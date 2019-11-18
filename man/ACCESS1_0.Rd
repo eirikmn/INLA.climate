@@ -24,6 +24,15 @@ data(ACCESS1_0)
   }
   }
 }
+\references{
+Bi, Daohua & Dix, Martin & Marsland, S. & O'Farrell, Siobhan & Rashid, Harun & Uotila, P. & Hirst, & Kowalczyk, Eva & Golebiewski, & Sullivan, Arnold & Yan, Yizhong & Hannah, & Franklin, Charmaine & Sun, Zhongmin & Vohralik, & Watterson, & Fiedler, R. & Collier, Mark & Puri, Kamal. (2012). The ACCESS coupled model: Description, control climate and evaluation. Australian Meteorological and Oceanographic Journal. 63. 41-64. 10.22499/2.6301.004. 
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
+
 \examples{
 # Load data
 data(ACCESS1_0, package = "INLA.climate")

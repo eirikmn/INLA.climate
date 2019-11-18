@@ -24,6 +24,14 @@ data(MRI_CGCM3)
   }
   }
 }
+\references{
+Yukimoto, S., Adachi, Y., Hosaka, M., Sakami, T., Yoshimura, H., Hirabara, M., Tanaka, T. Y., Shindo, E., Tsujino, H., Deushi, M., Mizuta,465R., Yabu, S., Obata, A., Nakano, H., Koshiro, T., Ose, T., and Kitoh, A. 2012: A New Global Climate Model of the Meteorological ResearchInstitute: MRI-CGCM3 –Model Description and Basic Performance–, J. Meteorolog. Soc. Jpn. Ser. II, 90A, 23–64.
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
 \examples{
 # Load data
 data(MRI_CGCM3, package = "INLA.climate")

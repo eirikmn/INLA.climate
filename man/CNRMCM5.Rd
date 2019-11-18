@@ -24,6 +24,14 @@ data(CNRMCM5)
   }
   }
 }
+\references{
+Voldoire, A., Sanchez-Gomez, E., Salas y Mélia, D. et al. Clim Dyn (2013) 40: 2091. https://doi.org/10.1007/s00382-011-1259-y
+
+Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
+
+Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelinka, 2013: Evaluating adjusted forcing and modelspread for historical and future scenarios in the cmip5 generation of climate  models. Journal of Geophysical Research: Atmo-spheres, 118 (3), 1139–1150, doi:10.1002/jgrd.50174
+
+}
 \examples{
 # Load data
 data(CNRMCM5, package = "INLA.climate")

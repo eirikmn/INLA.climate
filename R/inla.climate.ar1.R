@@ -37,7 +37,7 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
                         density = pp) )
   }else{
     x = INLA::inla.hyperpar.sample(nsamples,climate.res)
-    vv = cbind(rep(1,nsamples),x[,4:(2+m)])
+    vv = cbind(rep(0,nsamples),x[,4:(2+m)])
     uu = x[,(2+m+1):(2*m+2)]
     ww=matrix(NA,nrow=nsamples,ncol=m)
     pp=matrix(NA,nrow=nsamples,ncol=m)

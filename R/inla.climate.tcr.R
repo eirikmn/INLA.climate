@@ -44,7 +44,8 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
     hyperpars = matrix(NA,nrow=nsamples,ncol=tcr.col) #c(H,sf,F0,w1,...,wm,L1,...,Lm)
     hyperpars[,1] = 1/sqrt(exp(x[,2]))
     a=3
-    hyperpars[,2] = -a+2*a/(1+exp(-x[,3]))
+    #hyperpars[,2] = -a+2*a/(1+exp(-x[,3]))
+    hyperpars[,2] = x[,3]
     m = (dim(x)[2]-2)/2
     ar1.temp= inla.climate.ar1(climate.res,m=m,nsamples=nsamples,seed=seed,print.progress=print.progress)
     ww = matrix(NA,nrow=nsamples,ncol=m)

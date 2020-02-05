@@ -1,4 +1,4 @@
-inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,seed=1234,
+inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=100000,seed=1234,
                            print.progress=FALSE,model="fgn"){
 
   catch = tryCatch(attachNamespace("INLA"),error=function(x){})
@@ -8,19 +8,23 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=0,nsamples=100000,
   
   if(class(result)=="inla.climate"){
     climate.res = result$inla.result
+    if(is.null(T0.corr)){
+      if(!is.null(result$misc$T0)){
+        T0.corr = result$misc$T0 
+      }else{
+        T0.corr=0
+      }
+    }
   }else if(class(result)=="inla"){
     climate.res = result
-  }else{
-    stop("Input 'result' not a valid class.")
-  }
-  if(is.null(T0.corr)){
     if(!is.null(result$climate.misc$T0)){
       T0.corr = result$climate.misc$T0
     }else{
       T0.corr=0
     }
+  }else{
+    stop("Input 'result' not a valid class.")
   }
-  
   
   
   if(print.progress){

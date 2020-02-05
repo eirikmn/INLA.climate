@@ -17,10 +17,12 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=1000
     }
   }else if(class(result)=="inla"){
     climate.res = result
-    if(!is.null(result$climate.misc$T0)){
-      T0.corr = result$climate.misc$T0
-    }else{
-      T0.corr=0
+    if(is.null(T0.corr)){
+      if(!is.null(result$climate.misc$T0)){
+        T0.corr = result$climate.misc$T0
+      }else{
+        T0.corr=0
+      }
     }
   }else{
     stop("Input 'result' not a valid class.")

@@ -1,5 +1,5 @@
-\name{GISS_E2_R}
-\alias{GISS_E2_R}
+\name{ACCESS1_0}
+\alias{ACCESS1_0}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 ACCESS1.0 temperature and forcing dataset.

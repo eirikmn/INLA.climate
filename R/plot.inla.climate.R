@@ -98,6 +98,9 @@ plot.inla.climate = function(x,
       abline(v=x$hyperparam$means[[var.name]],lwd=0.8,col="black")
       abline(v=x$hyperparam$quant0.025[[var.name]],lwd=0.8,col="gray")
       abline(v=x$hyperparam$quant0.975[[var.name]],lwd=0.8,col="gray")
+      
+      title(xlab=expression(paste("Posterior density ("H")")),ylab="",line=2.5,cex.lab=1)
+      
       plot(x$hyperparam$marginals$sigmax,xlab="",ylab="",
            main="",type="l")
       abline(v=x$hyperparam$means$sigmax,lwd=0.8,col="black")

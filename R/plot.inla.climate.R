@@ -224,9 +224,9 @@ plot.inla.climate = function(x,
     figure.count <- new.plot(postscript,pdf,prefix,figure.count,...) +1
     par(mfrow=c(1,1),mar=(c(5,4,4,2)+0.1))
     
-    if(x$misc$mu.options$compute.mu %in% c(2,"full","complete")){
+    if(x$misc$mu.options$Year %in% c(2,"full","complete")){
       plot(x$misc$data$y,pch=19,cex=0.8,col="gray",ylab="", main="Temperature response to forcing",
-           xlab="Posterior mean: 2.5%, 50%, 97.5%",
+           xlab="",
            ylim=range(x$misc$data$y,x$mu$quant0.025,x$mu$quant0.975))
       lines(x$mu$quant0.5[1:n],lwd=1.5)
       lines(x$mu$quant0.025[1:n],lty=2)

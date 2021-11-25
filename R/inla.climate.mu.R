@@ -5,12 +5,12 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=1000
   if(length(find.package("INLA",quiet=TRUE))==0){
     stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
-  
+
   if(class(result)=="inla.climate"){
     climate.res = result$inla.result
     if(is.null(T0.corr)){
       if(!is.null(result$misc$T0)){
-        T0.corr = result$misc$T0 
+        T0.corr = result$misc$T0
       }else{
         T0.corr=0
       }
@@ -27,8 +27,8 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=1000
   }else{
     stop("Input 'result' not a valid class.")
   }
-  
-  
+
+
   if(print.progress){
     cat("Starting mu Monte Carlo sampling with n=",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
@@ -62,19 +62,19 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=1000
     LL = matrix(NA,nrow=nsamples,ncol=m)
     if(m == 1){
       ww = rep(1,nsamples)
-      LL = inla.rmarginal(nsamples,ar1.temp$p$density)-1 #lambda
+      LL = INLA::inla.rmarginal(nsamples,ar1.temp$p$density)-1 #lambda
     }else{
       for(k in 1:m){
         ww[,k] = ar1.temp[[paste0("w",k)]]$samples
         LL[,k] = ar1.temp[[paste0("p",k)]]$samples-1 #lambda
       }
     }
-    
+
   }
-  
 
 
-  
+
+
 
    tid.start = proc.time()[[3]]
   #if(!is.loaded('Rc_mu')){
@@ -92,12 +92,12 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=1000
   x2sumvec =numeric(n)
   for(iter in 1:nsamples){
     if(model %in% c("fgn","arfima")){
-      
+
       res = .C('Rc_mu',mumeans=as.matrix(meansmc,ncol=1),as.double(forcing),as.integer(length(forcing)),
                as.double(hyperpars[iter,1]),as.double(hyperpars[iter,2]),as.double(hyperpars[iter,3]))
-      
+
     }else if(model == "ar1"){
-      
+
       if(!is.loaded('Rc_mu_ar1')){
         #dyn.load(file.path(.Library,"INLA.climate/libs/Rc_Q.so"))
         dyn.load(file.path("Rc_mu_ar1.so"))
@@ -111,9 +111,9 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=1000
                  as.double(ww[iter,]),as.double(LL[iter,]),as.double(hyperpars[iter,1]),
                  as.double(hyperpars[iter,2]))
       }
-      
+
     }
-    
+
 
     if(!quick){
       mu.samples[iter,]=res$mumeans
@@ -169,11 +169,11 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=1000
           ret$samples[[paste0("p",k)]] = LL[,k]+1
         }
       }
-      
+
     }
-    
+
   }
-  
+
   if(class(result) == "inla.climate"){
     if(print.progress){
       print("Exporting inla.climate object")
@@ -197,5 +197,5 @@ inla.climate.mu = function(result,forcing,quick=FALSE,T0.corr=NULL,nsamples=1000
     ret$time = tid.mc
     return(ret)
   }
-  
+
 }

@@ -3,7 +3,7 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
   if(length(find.package("INLA",quiet=TRUE))==0){
     stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
-  
+
   if(class(result)=="inla.climate"){
     climate.res = result$inla.result
   }else if(class(result)=="inla"){
@@ -11,8 +11,8 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
   }else{
     stop("Input 'result' not a valid class.")
   }
-  
-  
+
+
   if(print.progress){
     cat("Starting ar1 weights and first-lag correlation parameter Monte Carlo sampling with n = ",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
@@ -22,13 +22,13 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
 
   #n=climate.res$misc$configs$contents$length[1]
 
-  
+
   #x = inla.posterior.sample(nsamples,r,seed=inla.seed) #int.strategy=grid
-  
+
   if(m == 1){
     ww = 1
-    pp = inla.tmarginal(function(x)1/(1+exp(-x)),climate.res$marginals.hyperpar$`Theta4 for idy`)
-    zpp = inla.zmarginal(pp,silent=TRUE)
+    pp = INLA::inla.tmarginal(function(x)1/(1+exp(-x)),climate.res$marginals.hyperpar$`Theta4 for idy`)
+    zpp = INLA::inla.zmarginal(pp,silent=TRUE)
     ret = list(w = 1,
                p = list(mean = zpp$mean, sd = zpp$sd,
                          quant0.025=zpp$quant0.025,
@@ -46,8 +46,8 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
       pp[,k] = 1/(1+rowSums(exp(-as.matrix(uu[,1:k]))))
     }
     ww = ww/rowSums(ww)
-    
-    
+
+
     ret = list()
     for(k in 1:m){
       mcfit = density(ww[,k])
@@ -66,7 +66,7 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
                                   samples = pp[,k])
     }
   }
-  
+
   tid.slutt = proc.time()[[3]]
   tid.mc=tid.slutt-tid.start
 
@@ -74,7 +74,7 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
     cat("Finished Monte Carlo sampling procedure in ",tid.mc," seconds\n",sep="")
   }
 
-  
+
   if(class(result) == "inla.climate"){
     if(print.progress){
       print("Exporting inla.climate object")
@@ -88,7 +88,7 @@ inla.climate.ar1 = function(result,m=1,nsamples=100000,seed=1234,print.progress=
     if(print.progress){
       print("Exporting list object")
     }
-    
+
     ret$time = tid.mc
     return(ret)
   }

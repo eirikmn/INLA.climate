@@ -34,7 +34,7 @@ h.map.maker = function(m=4,lagmax=1000,model="fgn"){
   
   coofdata = read.table(filepath)
   
-  warn.old = getOption("warn") ## grid spacing in coofdatais too narrow for splinefun to distinguish
+  warn.old = getOption("warn") ## grid spacing in coofdata is too narrow for splinefun to distinguish
   options(warn=-1)              ## them properly. It produces a warning which is here suppressed.
   funks = numeric(0)
   for(i in 1:(2*m)){

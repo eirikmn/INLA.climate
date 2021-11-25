@@ -1,14 +1,14 @@
-\name{HansenForcing}
-\alias{HansenForcing}
+\name{HansenForcingGHG}
+\alias{HansenForcingGHG}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Hansen forcing dataset.
 }
 \description{
-This is the Hansen forcing dataset from Hansen et al. (2010).
+This is the greenhouse gas component of an updated version of the Hansen forcing dataset from Hansen et al. (2010).
 }
 \usage{
-data(HansenForcing)
+data(HansenForcingGHG)
 }
 %- maybe also 'usage' for other objects documented here.
 \format{The data is a list that contains these objects:
@@ -27,14 +27,10 @@ Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temper
 }
 \examples{
 # Load data
-data(HansenForcing, package = "INLA.climate")
-
-#Plot temperature
-plot(HansenForcing$Year,HansenForcing$Temperature)
+data(HansenForcingGHG, package = "INLA.climate")
 
 #Plot forcing
-plot(HansenForcing$Year,HansenForcing$Forcing)
-
+plot(HansenForcingGHG$Year,HansenForcingGHG$Forcing)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

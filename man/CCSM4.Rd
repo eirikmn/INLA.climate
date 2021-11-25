@@ -37,10 +37,10 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 data(CCSM4, package = "INLA.climate")
 
 #Plot temperature
-plot(CCSM4$Year,GISS_E2_R$Temperature)
+plot(CCSM4$Year,CCSM4$Temperature)
 
 #Plot forcing
-plot(CCSM4$Year,GISS_E2_R$Forcing)
+plot(CCSM4$Year,CCSM4$Forcing)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

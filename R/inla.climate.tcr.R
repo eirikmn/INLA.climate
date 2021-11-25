@@ -1,11 +1,11 @@
 inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
                             print.progress=FALSE,model="fgn"){
-  
+
   atch = tryCatch(attachNamespace("INLA"),error=function(x){})
   if(length(find.package("INLA",quiet=TRUE))==0){
     stop("This function requires INLA. Please install at www.R-INLA.org or by calling 'install.packages(\"INLA\", repos=c(getOption(\"repos\"), INLA=\"https://inla.r-inla-download.org/R/testing\"), dep=TRUE)' from R.")
   }
-  
+
   if(class(result)=="inla.climate"){
     climate.res = result$inla.result
   }else if(class(result)=="inla"){
@@ -13,8 +13,8 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
   }else{
     stop("Input 'result' not a valid class.")
   }
-  
-  
+
+
   if(print.progress){
     cat("Starting TCR Monte Carlo sampling with n = ",format(nsamples,scientific=F)," simulations..\n",sep="")
   }
@@ -23,7 +23,7 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
 
   #n=climate.res$misc$configs$contents$length[1]
 
-  
+
   #x = inla.posterior.sample(nsamples,r,seed=inla.seed) #int.strategy=grid
   x = INLA::inla.hyperpar.sample(nsamples,climate.res)
   if(dim(x)[2]>4){
@@ -31,11 +31,11 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
   }
   zmc = 1:80
   a=3
-  
+
   if(model %in% c("fgn","arfima")){
     tcr.col = 4
     hyperpars = matrix(NA,nrow=nsamples,ncol=tcr.col) #c(H,sf,shift,TCR)
-    
+
     hyperpars[,1] = 0.5+0.5/(1+exp(-x[,2]))
     hyperpars[,2] = 1/sqrt(exp(x[,3]))
     hyperpars[,3] = x[,4]#-a+2*a/(1+exp(-x[,4]))
@@ -52,16 +52,16 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
     LL = matrix(NA,nrow=nsamples,ncol=m)
     if(m == 1){
       ww = rep(1,nsamples)
-      LL = inla.rmarginal(nsamples,ar1.temp$p$density)-1 #lambda
+      LL = INLA::inla.rmarginal(nsamples,ar1.temp$p$density)-1 #lambda
     }else{
       for(k in 1:m){
         ww[,k] = ar1.temp[[paste0("w",k)]]$samples
         LL[,k] = ar1.temp[[paste0("p",k)]]$samples-1 #lambda
       }
     }
-    
+
   }
-  
+
 
   tid.start = proc.time()[[3]]
   #if(!is.loaded('Rc_mu')){
@@ -91,10 +91,10 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
                  as.double(ww[iter,]),as.double(LL[iter,]),as.double(hyperpars[iter,1]),
                  as.double(hyperpars[iter,2]))
       }
-      
-      
+
+
     }
-    
+
     #mu.eans = mu.cwrapper(as.double(zmc),as.integer(80),as.double(hyperpars[iter,1]),
     #                      as.double(hyperpars[iter,2]),as.double(hyperpars[iter,3]))
     # strukturmc = (0.5+seq(0,80-1,length.out=80))^(hyperpars[iter,1]-3/2)
@@ -144,8 +144,8 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
       }
     }
   }
-  
-  
+
+
   if(class(result) == "inla.climate"){
     if(print.progress){
       print("Exporting inla.climate object")
@@ -161,7 +161,7 @@ inla.climate.tcr = function(result,Qco2,nsamples=100000,seed=1234,
     if(print.progress){
       print("Exporting list object")
     }
-    
+
     ret$time = tid.mc
     return(ret)
   }

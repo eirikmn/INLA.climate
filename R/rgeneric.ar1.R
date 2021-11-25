@@ -141,7 +141,7 @@ rgeneric.ar1 = function(
     
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx), #skal ikke sigma inn her?
              as.integer(nn),as.integer(NN),as.double(weights),as.double(alphas),
-             as.double(tau),as.double(sx))
+             as.double(tau),as.double(sx)) #1/sx ??
     
     
     Q = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)

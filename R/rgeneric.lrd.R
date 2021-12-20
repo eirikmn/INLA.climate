@@ -8,7 +8,7 @@ rgeneric.lrd = function(
   theta = NULL)
 {
   
-  require("INLA.climate",quietly=TRUE)
+  #require("INLA.climate",quietly=TRUE)
   
   tau = exp(15)
   envir = environment(sys.call()[[1]])

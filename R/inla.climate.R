@@ -125,7 +125,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
     error=warning
     )
 
-2if(is.character(result.approx)){
+  if(is.character(result.approx)){
     feil = "\n Convergence can sometimes be improved by changing the step length h."
     stop(paste0(result.approx,feil))
   }

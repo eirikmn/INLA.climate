@@ -44,7 +44,7 @@ if(require("INLA",quietly=TRUE)){
 
   result.climate <- inla.climate(data = GISS_E2_R$Temperature, forcing = GISS_E2_R$Forcing,
                           Qco2 = Qco2, compute.mu = compute.mu, m = m )
-  result.climate$inla.results$neffp
+
   summary.inla.climate
   summary(result.climate)
   print(result.climate$time)

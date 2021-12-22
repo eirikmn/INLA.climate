@@ -34,7 +34,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(CanESM2, package = "INLA.climate")
+data(CanESM2, package = "INLA.climate2")
 
 #Plot temperature
 plot(CanESM2$Year, CanESM2$Temperature)

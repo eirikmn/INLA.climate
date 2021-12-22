@@ -36,7 +36,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(NorESM1_M, package = "INLA.climate")
+data(NorESM1_M, package = "INLA.climate2")
 
 #Plot temperature
 plot(NorESM1_M$Year,NorESM1_M$Temperature)

@@ -35,7 +35,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 
 \examples{
 # Load data
-data(ACCESS1_0, package = "INLA.climate")
+data(ACCESS1_0, package = "INLA.climate2")
 
 #Plot temperature
 plot(ACCESS1_0$Year, ACCESS1_0$Temperature)

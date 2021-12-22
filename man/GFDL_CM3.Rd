@@ -34,7 +34,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(GFDL_CM3, package = "INLA.climate")
+data(GFDL_CM3, package = "INLA.climate2")
 
 #Plot temperature
 plot(GFDL_CM3$Year,GFDL_CM3$Temperature)

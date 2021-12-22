@@ -31,7 +31,7 @@ The HadGEM2 Development Team: Martin, G. M., Bellouin, N., Collins, W. J., Culve
 }
 \examples{
 # Load data
-data(HadGEM2_ES, package = "INLA.climate")
+data(HadGEM2_ES, package = "INLA.climate2")
 
 #Plot temperature
 plot(HadGEM2_ES$Year, HadGEM2_ES$Temperature)

@@ -1,4 +1,4 @@
-Package: INLA.climate2
+Package: INLA.climate
 Type: Package
 Title: Full Bayesian analysis of radiative forcing climate model
 Version: 0.7.2

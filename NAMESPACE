@@ -1,4 +1,4 @@
-useDynLib(INLA.climate2, c_Q, Rc_Q, c_mu, Rc_mu, c_mu_ar1, Rc_mu_ar1)
+useDynLib(INLA.climate, c_Q, Rc_Q, c_mu, Rc_mu, c_mu_ar1, Rc_mu_ar1)
 
 
 importFrom("graphics","title", "abline", "hist", "lines", "par", "plot")

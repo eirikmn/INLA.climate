@@ -1,24 +1,24 @@
-\name{INLA.climate2-package}
-\alias{INLA.climate2-package}
-\alias{INLA.climate2}
+\name{INLA.climate-package}
+\alias{INLA.climate-package}
+\alias{INLA.climate}
 \docType{package}
 \title{
-\packageTitle{INLA.climate2}
+\packageTitle{INLA.climate}
 }
 \description{
-\packageDescription{INLA.climate2}
+\packageDescription{INLA.climate}
 }
 \details{
 
 %The DESCRIPTION file:
-\packageDESCRIPTION{INLA.climate2}
-\packageIndices{INLA.climate2}
+\packageDESCRIPTION{INLA.climate}
+\packageIndices{INLA.climate}
 %~~ An overview of how to use the package, including the most important functions ~~
 }
 \author{
-\packageAuthor{INLA.climate2}
+\packageAuthor{INLA.climate}
 
-Maintainer: \packageMaintainer{INLA.climate2}
+Maintainer: \packageMaintainer{INLA.climate}
 }
 \references{
 Rue, H., Martino, S. and Chopin, N. (2009)

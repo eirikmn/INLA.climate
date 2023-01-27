@@ -18,7 +18,7 @@ inla.climate = function(data, forcing, Qco2=NULL,compute.mu=NULL, stepLength=0.0
   tid.start = proc.time()[[3]]
 
   inla.climate.call = sys.call(which=1)
-  if(sum(is.null(forcing))>0) stop("Forcing contains NA values")
+  if(sum(is.na(forcing))>0) stop("Forcing contains NA values")
 
   old.digits=getOption("digits")
   if(old.digits < 7){

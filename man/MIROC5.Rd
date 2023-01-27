@@ -34,7 +34,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(MIROC5, package = "INLA.climate2")
+data(MIROC5, package = "INLA.climate")
 
 #Plot temperature
 plot(MIROC5$Year,MIROC5$Temperature)

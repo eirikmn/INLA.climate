@@ -34,7 +34,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(MRI_CGCM3, package = "INLA.climate2")
+data(MRI_CGCM3, package = "INLA.climate")
 
 #Plot temperature
 plot(MRI_CGCM3$Year,MRI_CGCM3$Temperature)

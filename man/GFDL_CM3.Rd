@@ -25,7 +25,7 @@ data(GFDL_CM3)
   }
 }
 \references{
-Donner, Leo & Wyman, Bruce & Hemler, Richard & Horowitz, Larry & Ming, Yi & Zhao, Ming & Golaz, J-C & Ginoux, Paul & Lin, S-J & Schwarzkopf, M. & Austin, John & Alaka, Ghassan & Cooke, William & Delworth, Thomas & Freidenreich, S. & Gordon, C & Griffies, Stephen & Held, Isaac & Hurlin, William & Zeng, Fanrong. (2011). The Dynamical Core, Physical Parameterizations, and Basic Simulation Characteristics of the Atmospheric Component AM3 of the GFDL Global Coupled Model CM3. Journal of Climate. 24. 3484-3519. 10.1175/2011JCLI3955.1. 
+Donner, Leo & Wyman, Bruce & Hemler, Richard & Horowitz, Larry & Ming, Yi & Zhao, Ming & Golaz, J-C & Ginoux, Paul & Lin, S-J & Schwarzkopf, M. & Austin, John & Alaka, Ghassan & Cooke, William & Delworth, Thomas & Freidenreich, S. & Gordon, C & Griffies, Stephen & Held, Isaac & Hurlin, William & Zeng, Fanrong. (2011). The Dynamical Core, Physical Parameterizations, and Basic Simulation Characteristics of the Atmospheric Component AM3 of the GFDL Global Coupled Model CM3. Journal of Climate. 24. 3484-3519. 10.1175/2011JCLI3955.1.
 
 Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temperature change, Rev. Geophys., 48, RG4004, doi:10.1029/2010RG000345.
 
@@ -34,7 +34,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(GFDL_CM3, package = "INLA.climate2")
+data(GFDL_CM3, package = "INLA.climate")
 
 #Plot temperature
 plot(GFDL_CM3$Year,GFDL_CM3$Temperature)

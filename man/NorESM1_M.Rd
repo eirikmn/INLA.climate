@@ -25,7 +25,7 @@ data(NorESM1_M)
   }
 }
 \references{
-Bentsen, M. & Bethke, I. & Debernard, Jens & Iversen, Trond & Kirkevåg, Alf & Seland, Øyvind & Drange, Helge & Roelandt, Caroline & Seierstad, I. & Hoose, Corinna & Kristjánsson, J.. (2012). The Norwegian Earth System Model, NorESM1-M - Part 1: Description and basic evaluation. Geoscientific Model Development Discussions. 5. 2843-2931. 10.5194/gmdd-5-2843-2012. 
+Bentsen, M. & Bethke, I. & Debernard, Jens & Iversen, Trond & Kirkevåg, Alf & Seland, Øyvind & Drange, Helge & Roelandt, Caroline & Seierstad, I. & Hoose, Corinna & Kristjánsson, J.. (2012). The Norwegian Earth System Model, NorESM1-M - Part 1: Description and basic evaluation. Geoscientific Model Development Discussions. 5. 2843-2931. 10.5194/gmdd-5-2843-2012.
 
 Iversen, T., Bentsen, M., Bethke, I., Debernard, J. B., Kirkevåg, A., Seland, Ø., Drange, H., Kristjansson, J. E., Medhaug, I., Sand, M., and Seierstad, I. A.: The Norwegian Earth System Model, NorESM1-M – Part 2: Climate response and scenario projections, Geosci. Model Dev., 6, 389–415, https://doi.org/10.5194/gmd-6-389-2013, 2013.
 
@@ -36,7 +36,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(NorESM1_M, package = "INLA.climate2")
+data(NorESM1_M, package = "INLA.climate")
 
 #Plot temperature
 plot(NorESM1_M$Year,NorESM1_M$Temperature)

@@ -36,7 +36,7 @@ Morice, C.P., Kennedy, J.J., Rayner, N.A. and Jones, P.D., 2012: Quantifying unc
 }
 \examples{
 # Load data
-data(HadCRUT, package = "INLA.climate2")
+data(HadCRUT, package = "INLA.climate")
 
 #Plot temperature
 plot(HadCRUT$Year,HadCRUT$Temperature)

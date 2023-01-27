@@ -5,58 +5,58 @@ rgeneric.ar1 = function(
   cmd = c("graph", "Q","mu", "initial", "log.norm.const", "log.prior", "quit"),
   theta = NULL)
 {
-  
-  require("INLA.climate2",quietly=TRUE)
-  
+
+  require("INLA.climate",quietly=TRUE)
+
   tau = exp(15)
   envir = environment(sys.call()[[1]])
-  
+
   interpret.theta = function() {
     if(!is.null(envir)){
       NN=get("N",envir)
     }
-    
+
     kappax = exp(theta[1])
     kappaf = exp(theta[2])
     a = 3
     F0=theta[3]#F0 = -a + 2*a/(1+exp(-theta[3]))
     para=data.frame(kappax=kappax,kappaf=kappaf,F0=F0)
     denom = sum(exp(c(0,theta[3+(1:(NN-1))])))
-    
+
     weights=numeric(NN)
     if(NN>1){
       for(i in 2:(NN)){
         weights[i] <- exp(theta[2+i])
       }
     }
-    
+
     weights[1]=1
     weights = weights/sum(weights)
     for(i in 1:NN){
       para[[paste0("w",i)]] <- weights[i]
     }
-    
+
     for(i in 1:NN){
       para[[paste0("p",i)]] <- 1/(1+sum(exp(-theta[ (NN+2)+1:i ])))
     }
-    
-    
-    
+
+
+
     return(para)
   }
-  
+
   mu = function() {
-    
+
     if(!is.null(envir)){
       nn=get("n",envir)
       NN=get("N",envir)
       fforcing=get("forcing",envir)
-      
-      
+
+
     }
     hyperparam = interpret.theta()
     #print(hyperparam)
-    
+
     sf = 1/sqrt(hyperparam$kappaf)
     means = numeric(nn)
     if(NN == 1){
@@ -64,11 +64,11 @@ rgeneric.ar1 = function(
     }else{
       weights = as.numeric(hyperparam)[3+1:NN]
     }
-    
+
     ######
     pp=as.numeric(hyperparam)[NN+3+1:NN]
     llambdas = pp-1
-    
+
     if(!is.loaded('Rc_mu_ar1')){
       #dyn.load(file.path(.Library,"INLA.climate/libs/Rc_Q.so"))
       dyn.load(file.path("Rc_mu_ar1.so"))
@@ -79,45 +79,45 @@ rgeneric.ar1 = function(
     #print(res$mu[1:3])
     return(c(res$mu,rep(0,NN*nn)))
   }
-  
-  
+
+
   graph = function()
   {
-    
+
     if(!is.null(envir)){
       nn=get("n",envir)
       NN=get("N",envir)
-      
+
     }else{
       nn=get("n",environment())
       NN=get("N",environment())
-      
+
     }
-    
+
     ii = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
     jj = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
     xx = rep(1,2.5*NN*nn+nn-NN+nn*NN*NN/2)
-    
+
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
              as.integer(nn),as.integer(NN),as.double(rep(1/NN,NN)),as.double(rep(0.5,NN)),
              as.double(tau),as.double(1.0))
-    
+
     G = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
     G[G != 0] = 1
     return (G)
   }
-  
+
   Q = function()
   {
     if(!is.null(envir)){
       nn=get("n",envir)
       NN=get("N",envir)
-      
-      
+
+
     }
-    
+
     hyperparam = interpret.theta()
-    
+
     pparam = hyperparam[NN+3+(1:NN)]
     sx = 1/sqrt(hyperparam$kappax)
     alphas = pparam[1:NN]
@@ -126,8 +126,8 @@ rgeneric.ar1 = function(
     }else{
       weights = 1
     }
-    
-    
+
+
     ii = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
     jj = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
     xx = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
@@ -138,18 +138,18 @@ rgeneric.ar1 = function(
     if(length(theta)==0){
       sx=1;weights=rep(1/NN,NN);alphas=weights
     }
-    
+
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx), #skal ikke sigma inn her?
              as.integer(nn),as.integer(NN),as.double(weights),as.double(alphas),
              as.double(tau),as.double(sx)) #1/sx ??
-    
-    
+
+
     Q = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
-    
+
     return ( Q )
   }
-  
-  
+
+
   log.norm.const = function()
   {
     if(!is.null(envir)){
@@ -159,22 +159,22 @@ rgeneric.ar1 = function(
     # tid.rgen.start = proc.time()[[3]]
     hyperparams = interpret.theta()
     pparam = hyperparams[NN+3+(1:NN)]
-    
+
     #N = length(param)/2
-    
+
     sum = nn/2*log(tau)
     for (i in 1:NN){
       sum = sum -(nn-1)/2*log(1-pparam[i]^2)
     }
     tid.rgen.slutt = proc.time()[[3]]
-    
+
     return(sum)
   }
-  
+
   log.prior = function()
   {
     if(!is.null(envir)){
-      
+
       NN=get("N",envir)
       #pparam=get("params",envir)
     }
@@ -190,7 +190,7 @@ rgeneric.ar1 = function(
     lprior = lprior + INLA::inla.pc.dprec(params$kappaf, u=aa, alpha=bb, log=TRUE) + log(params$kappaf)
     #lprior = lprior + log(0.5)+log(1+1/(1+exp(-theta[2]))) - theta[2]-2*log(1+exp(-theta[2]))
     a=3
-    
+
     #skal ikke interne variabler brukes her? og hva så med w vektene?
     shift.a = 3
     #lprior = lprior + dnorm(theta[4],log=TRUE)
@@ -206,13 +206,13 @@ rgeneric.ar1 = function(
     }
     for(m in 1:(NN)){
       lprior = lprior + dnorm(theta[2+NN+m],log=TRUE)
-      
+
     }
-    
-    
+
+
     return (lprior)
   }
-  
+
   initial = function()
   {
     if(!is.null(envir)){
@@ -230,10 +230,10 @@ rgeneric.ar1 = function(
         ini=c(ini,0.)
       }
     }
-    
+
     return (ini)
   }
-  
+
   quit = function()
   {
     return ()
@@ -241,9 +241,9 @@ rgeneric.ar1 = function(
   # if(is.null(theta)){
   #   theta = initial()
   #   #envir=.GlobalEnv
-  #   
+  #
   # }
-  
+
   cmd = match.arg(cmd)
   val = do.call(cmd, args = list())
   return (val)

@@ -37,7 +37,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(GISS_E2_R, package = "INLA.climate2")
+data(GISS_E2_R, package = "INLA.climate")
 
 #Plot temperature
 plot(GISS_E2_R$Year,GISS_E2_R$Temperature)

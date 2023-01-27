@@ -34,7 +34,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(INM_CM4, package = "INLA.climate")
+data(INM_CM4, package = "INLA.climate2")
 
 #Plot temperature
 plot(INM_CM4$Year,INM_CM4$Temperature)

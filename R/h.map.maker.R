@@ -8,8 +8,8 @@ h.map.maker = function(m=4,lagmax=1000,model="fgn"){
   
   folder.path=c()
   for(i in 1:length(.libPaths())){
-    if("INLA.climate" %in% list.files(.libPaths()[i])){
-      folder.path=paste0(.libPaths()[i],"/INLA.climate/Hmapping/")
+    if("INLA.climate2" %in% list.files(.libPaths()[i])){
+      folder.path=paste0(.libPaths()[i],"/INLA.climate2/Hmapping/")
     }
   }
   if(length(folder.path)==0){

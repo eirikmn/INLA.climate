@@ -36,7 +36,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 }
 \examples{
 # Load data
-data(CSIRO_MK3_6_0, package = "INLA.climate")
+data(CSIRO_MK3_6_0, package = "INLA.climate2")
 
 #Plot temperature
 plot(CSIRO_MK3_6_0$Year,CSIRO_MK3_6_0$Temperature)

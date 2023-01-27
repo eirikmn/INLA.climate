@@ -35,7 +35,7 @@ Forster, P. M., T. Andrews, P. Good, J. M. Gregory, L. S. Jackson, and M. Zelink
 
 \examples{
 # Load data
-data(MPI_ESM_LR, package = "INLA.climate")
+data(MPI_ESM_LR, package = "INLA.climate2")
 
 #Plot temperature
 plot(MPI_ESM_LR$Year,MPI_ESM_LR$Temperature)

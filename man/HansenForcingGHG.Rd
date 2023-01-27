@@ -27,7 +27,7 @@ Hansen, J. and Ruedy, R. and Sato, M. and and Lo, K. 2010: Global surface temper
 }
 \examples{
 # Load data
-data(HansenForcingGHG, package = "INLA.climate")
+data(HansenForcingGHG, package = "INLA.climate2")
 
 #Plot forcing
 plot(HansenForcingGHG$Year,HansenForcingGHG$Forcing)

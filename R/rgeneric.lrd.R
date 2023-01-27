@@ -7,19 +7,20 @@ rgeneric.lrd = function(
   cmd = c("graph", "Q","mu", "initial", "log.norm.const", "log.prior", "quit"),
   theta = NULL)
 {
-  
+
   require("INLA.climate",quietly=TRUE)
-  
+
+
   tau = exp(15)
   envir = environment(sys.call()[[1]])
-  
+
 
   Hmap = function(H) {
 
     if(!is.null(envir)){
       NN=get("N",envir)
       ffunks=get("funks",envir)
-      
+
     }
     params = numeric(2*NN)
     for(i in 1:(2*NN)){
@@ -34,16 +35,16 @@ rgeneric.lrd = function(
     kappa = exp(theta[1])
     H = 0.5 + 0.5 / (1 + exp(-theta[2]))
     scale = exp(theta[3])
-    
+
     #a = 3
     #shift = -a + 2*a/(1+exp(-theta[4]))
     shift=theta[4]
-    
+
     return(list(H = H, kappa = kappa, scale = scale, shift = shift))
   }
 
   mu = function() {
-    
+
     # tid.rgen.start = proc.time()[[3]]
     if(!is.null(envir)){
       nn=get("n",envir)
@@ -57,9 +58,9 @@ rgeneric.lrd = function(
     #n = 30
     means = numeric(nn)
 
-   
+
     res = .C('Rc_mu',ans=as.matrix(means,ncol=1),as.double(fforcing),as.integer(nn),
-             as.double(H),as.double(sf),as.double(shift), PACKAGE="INLA.climate")
+             as.double(H),as.double(sf),as.double(shift), PACKAGE="INLA.climate2")
 
 
     return(c(res$ans,rep(0,NN*nn)))
@@ -70,23 +71,23 @@ rgeneric.lrd = function(
     if(!is.null(envir)){
       nn=get("n",envir)
       NN=get("N",envir)
-      
+
     }else{
       nn=get("n",environment())
       NN=get("N",environment())
-      
+
     }
-     
-    
-    
+
+
+
     ii = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
     jj = numeric(2.5*NN*nn+nn-NN+nn*NN*NN/2)
     xx = rep(1,2.5*NN*nn+nn-NN+nn*NN*NN/2)
-    
+
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
              as.integer(nn),as.integer(NN),as.double(rep(1/NN,NN)),as.double(rep(0.5,NN)),
-             as.double(tau),as.double(1.0), PACKAGE="INLA.climate")
-    
+             as.double(tau),as.double(1.0), PACKAGE="INLA.climate2")
+
     G = Matrix::sparseMatrix(i=res$minii,j=res$minjj,x=res$minxx,symmetric=TRUE)
     G[G != 0] = 1
     return (G)
@@ -94,12 +95,12 @@ rgeneric.lrd = function(
 
   Q = function()
   {
-    
+
     if(!is.null(envir)){
       nn=get("n",envir)
       NN=get("N",envir)
     }
-    
+
     hyperparam = interpret.theta()
     H = hyperparam$H
 
@@ -128,7 +129,7 @@ rgeneric.lrd = function(
     #res = .C('myQr',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
     res = .C('Rc_Q',minii=as.double(ii),minjj=as.double(jj),minxx=as.double(xx),
               as.integer(nn),as.integer(NN),as.double(weights),as.double(alphas),
-              as.double(tau),as.double(sx), PACKAGE="INLA.climate")
+              as.double(tau),as.double(sx), PACKAGE="INLA.climate2")
 
 
 
@@ -160,7 +161,7 @@ rgeneric.lrd = function(
   log.prior = function()
   {
     if(!is.null(envir)){
-      
+
       llprior.fun.H=get("lprior.fun.H",envir)
     }
     # tid.rgen.start = proc.time()[[3]]
@@ -178,7 +179,7 @@ rgeneric.lrd = function(
     a=3
     #lprior = lprior + dnorm(-a+2*a/(1+exp(-params$shift)),sd=0.2,log=TRUE)+log(2*a)-params$shift -2*log(1+exp(-params$shift))
     lprior = lprior + dnorm(theta[4],log=TRUE)
-    
+
     return (lprior)
   }
 
@@ -195,7 +196,7 @@ rgeneric.lrd = function(
   if(is.null(theta)){
     theta = initial()
     #envir=.GlobalEnv
-    
+
   }
 
   cmd = match.arg(cmd)

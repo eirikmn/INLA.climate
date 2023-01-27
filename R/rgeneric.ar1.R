@@ -6,7 +6,7 @@ rgeneric.ar1 = function(
   theta = NULL)
 {
   
-  require("INLA.climate",quietly=TRUE)
+  require("INLA.climate2",quietly=TRUE)
   
   tau = exp(15)
   envir = environment(sys.call()[[1]])
